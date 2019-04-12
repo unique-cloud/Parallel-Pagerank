@@ -1,78 +1,38 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include "pagerank.hh"
 // #include <sys/time.h>
-#include <time.h>
 
-/* Step One: 
-   sequential implementation of the PageRank algorithm
-*/
+/* sequential implementation of the PageRank algorithm */
 
-int baseline(){
-
-	/*************************** TIME, VARIABLES ***************************/
-
-	// Keep track of the execution time
-	clock_t begin, end;
-	double time_spent;
-	begin = clock();
+int baseline(vector<Edge* >edges, const int N){
 
 	// Set the damping factor 'd'
 	float d = 0.85;
 
-	/******************* OPEN FILE + NUM OF NODES **************************/
-
-	// Open the data set
-    // char filename[] = "./web-NotreDame.txt";
-    char filename[] = "./hollins.dat";
-    FILE *fp;
-    if((fp = fopen(filename,"r")) == NULL) {
-        fprintf(stderr,"[Error] Cannot open the file");
-        exit(1);
-    }
-
-    // Read the data set and get the number of nodes (n)
-    int n;
-    char ch;
-    char str[100];
-    ch = getc(fp);
-    while (ch =='#') {
-        fgets(str,100-1,fp);
-        //Debug: print title of the data set
-        //printf("%s",str);
-        sscanf (str,"%*s %d %*s %*d", &n); 
-        ch = getc(fp);
-    }
-    ungetc(ch, fp);
-
-    // DEBUG: Print the number of nodes 
-    printf("\nNumber of nodes = %d\n",n);
-
    	/********************** INITIALIZATION OF A **************************/
 
-    float **a = (float **)malloc(sizeof(float *) * n);
+    float **a = (float **)malloc(sizeof(float *) * N);
 	int i, j, node1, node2;
 	
 	// Preallocate the adjacency matrix 'a'    
-	for (i = 0; i < n; i++) {
-	  	a[i] = (float *)malloc(sizeof(float) * n);
+	for (i = 0; i < N; i++) {
+	  	a[i] = (float *)malloc(sizeof(float) * N);
 	}
 
 	// Initialize all the adjacency matrix to 0.0
-	for(i = 0; i < n; i++){ 
-        for(j = 0; j < n; j++){ 
+	for(i = 0; i < N; i++){ 
+        for(j = 0; j < N; j++){ 
         	a[i][j] = 0.0;
         }
     }
 
 	// Update the matrix to 1.0 if there's an edge between nodes
-	while(!feof(fp)){
-	    fscanf(fp,"%d%d", &node1, &node2);
-	    //printf("Node 1: %d, Node 2: %d\n", node1, node2);
-	    a[node1][node2] = 1.0;
-	    //printf("In matrix a[%d][%d]: %f\n", node1, node2, a[node1][node2]);
-	}
-    
+    for(auto &edge : edges)
+    {
+        a[edge->src][edge->dest] = 1;
+    }
     /* DEBUG: print the adjacency matrix
     printf("\nThe adjacency matrix is :\n\n");
 	for(i = 0; i < n; i++){ 
@@ -83,41 +43,41 @@ int baseline(){
 
 	/********************** INITIALIZATION OF AT **************************/
 
-    float **at = (float**)malloc(sizeof(float*) * n);
+    float **at = (float**)malloc(sizeof(float*) * N);
 
     // Preallocate space for the transposed matrix 'at'
-	for (i = 0; i < n; i++) {
-	    at[i] = (float*)malloc(sizeof(float) * n);
+	for (i = 0; i < N; i++) {
+	    at[i] = (float*)malloc(sizeof(float) * N);
 	}
 
 	// Initialize all the transposed matrix to 0.0
-	for (i=0; i<n; i++){
-		for (j=0; j<n; j++){
+	for (i=0; i<N; i++){
+		for (j=0; j<N; j++){
 			at[i][j] = 0.0;
 		}
 	}
 
 	/********************** INITIALIZATION OF P **************************/
 
-	float p[n];
+	float p[N];
 	
 	// Initialize the p[] vector
-	for(i=0; i<n; i++) {
-		p[i] = 1.0 / n;
+	for(i=0; i<N; i++) {
+		p[i] = 1.0 / N;
 	}
 
 	/******************* INITIALIZATION OF OUTPUT LINK ********************/
 	
-	int out_link[n];
+	int out_link[N];
 
 	// Initialize the output link vector
-	for (i=0; i<n; i++) {
+	for (i=0; i<N; i++) {
 		out_link[i] = 0;
 	}
 
 	// Manage dangling nodes   
-	for (i=0; i<n; i++) {
-		for (j=0; j<n; j++) {
+	for (i=0; i<N; i++) {
+		for (j=0; j<N; j++) {
 			if (a[i][j] != 0.0) {
 				out_link[i] = out_link[i] + 1;
 			}
@@ -137,14 +97,14 @@ int baseline(){
 	/*********************** MATRIX STOCHASTIC-FIED  ***********************/
 
 	// Make the matrix stochastic
-	for (i=0; i<n; i++){
+	for (i=0; i<N; i++){
 		if (out_link[i] == 0){
 			// Deal with dangling nodes
-			for (j=0; j<n; j++){
-				a[i][j] = 1.0 / n;
+			for (j=0; j<N; j++){
+				a[i][j] = 1.0 / N;
 			}
 		} else {
-			for (j=0; j<n; j++){
+			for (j=0; j<N; j++){
 				if (a[i][j] != 0) {
 					a[i][j] = a[i][j] / out_link[i];
 				}
@@ -164,8 +124,8 @@ int baseline(){
 	/************************** MATRIX IS TRANSPOSED **********************/
 
 	// Transpose the matrix 
-	for (i=0; i<n; i++){
-		for (j=0; j<n; j++){
+	for (i=0; i<N; i++){
+		for (j=0; j<N; j++){
 			at[j][i] = a[i][j];
 		}
 	}
@@ -190,18 +150,18 @@ int baseline(){
 	int k = 0;
 
 	// Initialize new p vector
-	float p_new[n];
+	float p_new[N];
 
 	while (looping) {
 
 		// Initialize p_new as a vector of n 0.0 cells
-		for (i=0; i<n; i++){
+		for (i=0; i<N; i++){
 			p_new[i] = 0.0;
 		}
 		
 		// Update p_new (without using the damping factor)
-		for (i=0; i<n; i++){
-			for (j=0; j<n; j++){
+		for (i=0; i<N; i++){
+			for (j=0; j<N; j++){
 				p_new[i] = p_new[i] + (at[i][j] * p[j]);
 			}
 		} 
@@ -212,8 +172,8 @@ int baseline(){
 	    }*/
 
 		// Update p_new (using the damping factor)
-		for(i=0; i<n; i++){
-		 	p_new[i] = d * p_new[i] + (1.0 - d) / n;
+		for(i=0; i<N; i++){
+		 	p_new[i] = d * p_new[i] + (1.0 - d) / N;
 		}
 
 		/*DEBUG: print pnew after the damping factor multiplication
@@ -223,7 +183,7 @@ int baseline(){
 
 		// TERMINATION: check if we have to stop
 	    float error = 0.0;
-	    for(i=0; i<n; i++){
+	    for(i=0; i<N; i++){
 	        error =  error + fabs(p_new[i] - p[i]);
 	    }
 
@@ -233,7 +193,7 @@ int baseline(){
 	    }
 
 	    // Update p[]
-	    for (i=0; i<n;i++){
+	    for (i=0; i<N;i++){
 	    	p[i] = p_new[i];
 		}
 
@@ -241,12 +201,7 @@ int baseline(){
 	    k = k + 1;
 	}
 
-	/*************************** CONCLUSIONS *******************************/
-
-	// Stop the timer and compute the time spent
-	end = clock();
-	time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-		
+	/*************************** CONCLUSIONS *******************************/		
 	// Print results
 	printf ("\nNumber of iteration to converge: %d \n\n", k); 
 	// printf ("Final Pagerank values:\n\n[");
@@ -255,6 +210,5 @@ int baseline(){
 	// 	if(i!=(n-1)){ printf(", "); }
 	// }
 	// printf("]\n\n");
-	printf("Time spent: %f seconds.\n", time_spent);
 	return 0;
 }
