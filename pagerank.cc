@@ -16,8 +16,9 @@ int main(int argc, char **argv)
     if (argc != 2)
     {
         fprintf(stderr, "Usage: %s mode\n", argv[0]);
+        exit(EXIT_FAILURE);
     }
-        mode = atoi(argv[1]);
+    mode = atoi(argv[1]);
 
     switch (mode)
     {
