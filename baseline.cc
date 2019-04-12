@@ -124,15 +124,15 @@ int baseline(){
 		}
 	}
 
-	// Print outlink vector
-	printf("\nPer-node out link: \n\n     [");
-	for (i=0; i<n; i++){
-		printf("%d", out_link[i]);
-		if(i != (n-1)){
-			printf(", "); 
-		}
-	}
-	printf("]\n\n");
+	// // Print outlink vector
+	// printf("\nPer-node out link: \n\n     [");
+	// for (i=0; i<n; i++){
+	// 	printf("%d", out_link[i]);
+	// 	if(i != (n-1)){
+	// 		printf(", "); 
+	// 	}
+	// }
+	// printf("]\n\n");
 
 	/*********************** MATRIX STOCHASTIC-FIED  ***********************/
 
@@ -249,11 +249,12 @@ int baseline(){
 		
 	// Print results
 	printf ("\nNumber of iteration to converge: %d \n\n", k); 
-	printf ("Final Pagerank values:\n\n[");
-	for (i=0; i<n; i++){
-		printf("%f ", p[i]);
-		if(i!=(n-1)){ printf(", "); }
-	}
-	printf("]\n\nTime spent: %f seconds.\n", time_spent);
+	// printf ("Final Pagerank values:\n\n[");
+	// for (i=0; i<n; i++){
+	// 	printf("%f ", p[i]);
+	// 	if(i!=(n-1)){ printf(", "); }
+	// }
+	// printf("]\n\n");
+	printf("Time spent: %f seconds.\n", time_spent);
 	return 0;
 }

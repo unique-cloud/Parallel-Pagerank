@@ -27,7 +27,7 @@ TARGET = pagerank
 SRCS = pagerank.cc baseline.cc power.cc Edge.cc edge_centric.cc edge_opt.cc deviceInfoQuery.cc
 SRCS_FILES = $(foreach F, $(SRCS), ./$(F))
 OBJS=$(SRCS:.c=.o)
-COMMON_FILES =
+COMMON_FILES = ./common/src/AOCL_Utils.cpp
 CXX_FLAGS =-lm -O3 -g
 
 # arm cross compiler
