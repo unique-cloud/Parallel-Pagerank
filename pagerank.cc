@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <sys/time.h>
+#include <cmath>
 #include "pagerank.hh"
 
 using namespace std;
@@ -14,24 +15,24 @@ int main(int argc, char **argv)
     int mode = 0;
     gettimeofday(&program_start, NULL);
 
-    if (argc != 2)
+    if (argc != 3)
     {
-        cerr << "Usage: " << argv[0] << " mode\n";
+        cerr << "Usage: " << argv[0] << " dataset mode\n";
         exit(EXIT_FAILURE);
     }
-    mode = atoi(argv[1]);
-    
-/************************************READ DATASET***********************************/
+    mode = atoi(argv[2]);
+
+    /************************************READ DATASET***********************************/
     // Open dataset
-    string filename = "./hollins.dat";
+    string filename(argv[1]);
     ifstream infile(filename, ios::in);
     if (!infile)
     {
-        cerr << "Cannot open the file" << std::endl;
+        cerr << "Cannot open the file" << endl;
         exit(EXIT_FAILURE);
     }
 
-    // Read the data set and get the number of nodes (n)
+    // read the dataset and get basic info
     int num_nodes = 0, num_edges = 0;
     char ch;
     string str;
@@ -45,74 +46,83 @@ int main(int argc, char **argv)
     infile.putback(ch);
 
     // DEBUG: Print the number of nodes
-    cout << "Number of nodes = " << num_nodes << std::endl;
-    cout << "Number of edges = " << num_edges << std::endl;
+    cout << "Number of nodes = " << num_nodes << endl;
+    cout << "Number of edges = " << num_edges << endl;
 
     // Read data
     std::vector<Edge> edges;
-    int vtx1, vtx2;
+    int node1, node2;
     while (!infile.eof())
     {
         getline(infile, str);
         if (str.empty())
             continue;
 
-        sscanf(str.c_str(), "%d %d", &vtx1, &vtx2);
-        Edge e = {vtx1-1, vtx2-1};
+        sscanf(str.c_str(), "%d %d", &node1, &node2);
+        Edge e = {node1 - 1, node2 - 1};
         edges.push_back(e);
     }
 
     cout << "The total number of edges read in: " << edges.size() << endl;
-    if(num_edges != edges.size())
+    if (num_edges != edges.size())
     {
         cerr << "Wrong number of data size";
         exit(EXIT_FAILURE);
     }
-    
-    // cout<<"Now printing the edges: " <<endl;
-    // for(auto &e : edges)
-    // {
-    //     std::cout << "edge " << e.src << " " << e.dest << std::endl;
-    // }
-/********************************END OF READ DATASET****************************/
+
+    /***************************************PAGERANK****************************************/
+    float *output_rank = new float[num_nodes];
+    float *base_rank = new float[num_nodes];
 
     switch (mode)
     {
     case 1:
         gettimeofday(&time_start, NULL);
-        power(edges, num_nodes);
+        power(edges, num_nodes, output_rank);
         gettimeofday(&time_end, NULL);
         cout << "Using power method: ";
         break;
     case 2:
         gettimeofday(&time_start, NULL);
-        edge_centric(edges, num_nodes);
+        edge_centric(edges, num_nodes, output_rank);
         gettimeofday(&time_end, NULL);
-        cout << "Using edge centric: ";
-        break;
-    case 3:
-        gettimeofday(&time_start, NULL);
-        edge_opt(edges, num_nodes);
-        gettimeofday(&time_end, NULL);
-        cout << "Using optimized edge centric: ";
+        cout << "Using edge centric method: ";
         break;
     case 10:
-        // this is for test compling
         gettimeofday(&time_start, NULL);
         deviceInfoQuery();
         gettimeofday(&time_end, NULL);
         cout << "Querying device info: ";
-        break;
+        return 0;
     default:
         gettimeofday(&time_start, NULL);
-        baseline(edges, num_nodes);
+        baseline(edges, num_nodes, output_rank);
         gettimeofday(&time_end, NULL);
         cout << "Using baseline: ";
         break;
     }
-    
+
     cout << (time_end.tv_sec * 1000000 + time_end.tv_usec) - (time_start.tv_sec * 1000000 + time_start.tv_usec) << endl;
+
+    // Verify result
+    cerr << "Verifying Result" << endl;
+    baseline(edges, num_nodes, base_rank);
+    int i = 0;
+    for (i = 0; i < num_nodes; i++)
+    {
+        if (fabs(output_rank[i] - base_rank[i]) >= DIFF_ERROR)
+            break;
+    }
+    if (i != num_nodes)
+        cerr << "Failed at " << i << endl;
+    else
+        cerr << "Pass" << endl;
+
+    // Cleanup
+    delete (output_rank);
+    delete (base_rank);
+
     gettimeofday(&program_end, NULL);
-    
+
     return 0;
 }

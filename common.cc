@@ -10,7 +10,7 @@ scoped_array<cl_kernel> kernel;
 cl_int status;
 
 // Initializes the OpenCL objects.
-bool init_opencl(std::string kernel_name)
+bool init_opencl(std::string cl_name)
 {
     // printf("Initializing OpenCL\n");
 
@@ -50,7 +50,7 @@ bool init_opencl(std::string kernel_name)
     // representative device (assuming all device are of the same type).
 
     // Read the file in from source
-    FILE *program_handle = fopen(kernel_name.c_str(), "r");
+    FILE *program_handle = fopen(cl_name.c_str(), "r");
     if (program_handle == NULL)
     {
         perror("Couldn't find the program file");

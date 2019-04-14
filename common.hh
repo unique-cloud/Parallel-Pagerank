@@ -1,15 +1,16 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <string>
-
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
 #include <CL/cl.h>
 #endif
-
+#include <string>
 #include "AOCL_Utils.h"
+
+#define DIFF_ERROR (0.000001)
+#define DAMPING_FACTOR (0.85)
 
 using namespace aocl_utils;
 
@@ -32,8 +33,7 @@ typedef struct {
     int dest;
 } Edge;
 
-
-bool init_opencl(std::string kernel_name);
+bool init_opencl(std::string cl_name);
 void cleanup();
 
 #endif
