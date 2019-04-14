@@ -28,7 +28,7 @@ SRCS = pagerank.cc baseline.cc power.cc edge_centric.cc deviceInfoQuery.cc commo
 SRCS_FILES = $(foreach F, $(SRCS), ./$(F))
 OBJS=$(SRCS:.c=.o)
 COMMON_FILES = ./common/src/AOCL_Utils.cpp
-CXX_FLAGS =-lm -O3 -g
+CXX_FLAGS =-lm -O3 -g -std=c++11
 
 # arm cross compiler
 CROSS-COMPILE = arm-linux-gnueabihf-
