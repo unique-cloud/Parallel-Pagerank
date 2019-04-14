@@ -1,6 +1,6 @@
 #include "pagerank.hh"
 
-int edge_opt(vector<Edge* >edges, const int N)
+int edge_opt(vector<Edge> &edges, const int N)
 {
     
 }

@@ -24,7 +24,7 @@ TARGET = pagerank
 # endif
 
 # Libraries to use, objects to compile
-SRCS = pagerank.cc baseline.cc power.cc Edge.cc edge_centric.cc edge_opt.cc deviceInfoQuery.cc
+SRCS = pagerank.cc baseline.cc power.cc edge_centric.cc edge_opt.cc deviceInfoQuery.cc common.cc
 SRCS_FILES = $(foreach F, $(SRCS), ./$(F))
 OBJS=$(SRCS:.c=.o)
 COMMON_FILES = ./common/src/AOCL_Utils.cpp

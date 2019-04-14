@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     cout << "Number of edges = " << num_edges << std::endl;
 
     // Read data
-    std::vector<Edge *> edges;
+    std::vector<Edge> edges;
     int vtx1, vtx2;
     while (!infile.eof())
     {
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
             continue;
 
         sscanf(str.c_str(), "%d %d", &vtx1, &vtx2);
-        Edge *e = new Edge(vtx1, vtx2);
+        Edge e = {vtx1-1, vtx2-1};
         edges.push_back(e);
     }
 
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     // cout<<"Now printing the edges: " <<endl;
     // for(auto &e : edges)
     // {
-    //     std::cout << "edge " << e->src << " " << e->dest << std::endl;
+    //     std::cout << "edge " << e.src << " " << e.dest << std::endl;
     // }
 /********************************END OF READ DATASET****************************/
 
@@ -112,7 +112,6 @@ int main(int argc, char **argv)
     }
     
     cout << (time_end.tv_sec * 1000000 + time_end.tv_usec) - (time_start.tv_sec * 1000000 + time_start.tv_usec) << endl;
-
     gettimeofday(&program_end, NULL);
     
     return 0;

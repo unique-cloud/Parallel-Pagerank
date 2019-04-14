@@ -1,34 +1,60 @@
 #define DAMPING_FACTOR (0.85)
 
-__kernel void scatter(__global uint *src_arr, __global uint *dest_arr,
-                      __global uint *outCount_arr, __global float *msg_arr, __global float *msg_arr_pre,
-                      const uint total_vtx_num)
+typedef struct {
+    int src;
+    int dest;
+} Edge;
+
+typedef struct {
+    int dest;
+    float val;
+} Msg;
+
+__kernel void scatter(__global Edge *edge_arr, __global uint *outCount_arr, 
+		      __global Msg *msg_arr, __global float *rank, 
+                      const uint num_vtx)
 {
     uint idx = get_global_id(0);
 
     // send messege to dest
-    uint src = src_arr[idx];
-    uint dest = dest_arr[idx];
-    uint outCount = outCount_arr[src];
+    Edge edge = edge_arr[idx];
+    uint outCount = outCount_arr[edge.src];
 
+    if (idx == 0)
+    {
+        printf("Inital rank array is %.8f\n", rank[edge.src]);
+    }
+    
+    Msg msg = {edge.dest, 0};
     if (outCount)
-        msg_arr[dest] += msg_arr_pre[src] / outCount;
-    else
-        msg_arr[dest] += msg_arr_pre[src] / total_vtx_num;
+        msg.val = rank[edge.src] / outCount;
+
+    msg_arr[idx] = msg;
 }
 
-__kernel void gather(__global float *msg_arr, __global float *msg_arr_pre, __global float *err_arr, const uint total_vtx_num)
+__kernel void gather(__global Msg *msg_arr, __global float *rank, 
+                     __global float *err_arr, const uint num_edges, 
+                     const uint num_vtx, const float sink_rank)
 {
     uint idx = get_global_id(0);
     float d = DAMPING_FACTOR;
 
-    // Multiply by damping factor
-    msg_arr[idx] *= d;
-    msg_arr[idx] += (1 - d) / total_vtx_num;
+    // gather message
+    float rank_new = 0.0;
+    for(int i = 0; i < num_edges; ++i)
+    {
+        if(msg_arr[i].dest == idx)
+            rank_new += msg_arr[i].val;
+    }
 
+    // Multiply by damping factor
+    rank_new += sink_rank;
+    rank_new *= d;
+    rank_new += (1 - d) / num_vtx;
+    
     // Caculate error
-    err_arr[idx] = msg_arr[idx] - msg_arr_pre[idx];
+    err_arr[idx] = fabs(rank_new - rank[idx]);
 
     // Set 0 for next iteration
-    msg_arr_pre[idx] = 0;
+    rank[idx] = rank_new;
 }

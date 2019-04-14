@@ -1,50 +1,37 @@
+#include <iostream>
 #include "pagerank.hh"
-#include "Edge.hh"
-// #include "CL/opencl.h"
-// #include "AOCL_Utils.h"
+#include "common.hh"
+#include "CL/opencl.h"
+#include "AOCL_Utils.h"
 
-// using namespace aocl_utils;
-// using namespace std;
+using namespace std;
 
-// // OpenCL runtime configuration
-// cl_platform_id platform = NULL;
-// unsigned num_devices = 0;
-// scoped_array<cl_device_id> device;
-// cl_context context = NULL;
-// scoped_array<cl_command_queue> queue;
-// cl_program program = NULL;
-// scoped_array<cl_kernel> kernel;
-// cl_int status;
-
-// bool init_opencl();
-// void cleanup();
-
-int power(vector<Edge* >edges, const int N)
+int power(vector<Edge> &edges, const int N)
 {
     
-}
-//     float d = 0.85;
+    float d = 0.85;
 
-//     float **a = (float **)malloc(sizeof(float *) * N);
-// 	int i, j, node1, node2;
+    float **a = (float **)malloc(sizeof(float *) * N);
+	int i, j, node1, node2;
    
-// 	for (i = 0; i < N; i++) {
-// 	  	a[i] = (float *)malloc(sizeof(float) * N);
-// 	}
+	for (i = 0; i < N; i++) {
+	  	a[i] = (float *)malloc(sizeof(float) * N);
+	}
 
-// 	for(i = 0; i < N; i++){ 
-//         for(j = 0; j < N; j++){ 
-//         	a[i][j] = 0.0;
-//         }
-//     }
+	for(i = 0; i < N; i++){ 
+        for(j = 0; j < N; j++){ 
+        	a[i][j] = 0.0;
+        }
+    }
 
-// 	// Update the matrix to 1.0 if there's an edge between nodes
-//     for(auto &edge : edges)
-//     {
-//         a[edge->src][edge->dest] = 1;
-//     }
+	// Update the matrix to 1.0 if there's an edge between nodes
+    for(auto &edge : edges)
+    {
+        a[edge.src][edge.dest] = 1;
+    }
 
-// 	/********************** INITIALIZATION OF AT **************************/
+	/********************** INITIALIZATION OF AT **************************/
+
 
 //     float **at = (float**)malloc(sizeof(float*) * N);
 
@@ -59,53 +46,8 @@ int power(vector<Edge* >edges, const int N)
 // 			at[i][j] = 0.0;
 // 		}
 // 	}
-
-// 	/********************** INITIALIZATION OF P **************************/
-
-// 	float *p = new float[N];
-	
-// 	// Initialize the p[] vector
-// 	for(i=0; i<N; i++) {
-// 		p[i] = 1.0 / N;
-// 	}
-
-// 	/******************* INITIALIZATION OF OUTPUT LINK ********************/
-	
-// 	int *out_link = new int[N];
-
-// 	// Initialize the output link vector
-// 	for (i=0; i<N; i++) {
-// 		out_link[i] = 0;
-// 	}
-
-// 	// Manage dangling nodes   
-// 	for (i=0; i<N; i++) {
-// 		for (j=0; j<N; j++) {
-// 			if (a[i][j] != 0.0) {
-// 				out_link[i] = out_link[i] + 1;
-// 			}
-// 		}
-// 	}
-
-// 	/*********************** MATRIX STOCHASTIC-FIED  ***********************/
-
-// 	// Make the matrix stochastic
-// 	for (i=0; i<N; i++){
-// 		if (out_link[i] == 0){
-// 			// Deal with dangling nodes
-// 			for (j=0; j<N; j++){
-// 				a[i][j] = 1.0 / N;
-// 			}
-// 		} else {
-// 			for (j=0; j<N; j++){
-// 				if (a[i][j] != 0) {
-// 					a[i][j] = a[i][j] / out_link[i];
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	/************************** MATRIX IS TRANSPOSED **********************/
+    
+//     	/************************** MATRIX IS TRANSPOSED **********************/
 
 // 	// Transpose the matrix 
 // 	for (i=0; i<N; i++){
@@ -113,167 +55,140 @@ int power(vector<Edge* >edges, const int N)
 // 			at[j][i] = a[i][j];
 // 		}
 // 	}
+
+	/********************** INITIALIZATION OF P **************************/
+
+	float *p = new float[N];
 	
-// 	/*************************** PageRank LOOP  **************************/
+	// Initialize the p[] vector
+	for(i=0; i<N; i++) {
+		p[i] = 1.0 / N;
+	}
 
-// 	// Set the looping condition and the number of iterations 'k'
-// 	int looping = 1;
+	/******************* INITIALIZATION OF OUTPUT LINK ********************/
+	
+	int *out_link = new int[N];
 
-// 	// Initialize new p vector
-//     float *p_new = new float[N];
-//     for (i=0; i<N; i++){
-// 		p_new[i] = 0.0;
-//     }
+	// Initialize the output link vector
+	for (i=0; i<N; i++) {
+		out_link[i] = 0;
+	}
 
-//     float *error = (float*)malloc(sizeof(float) * N);
-//     for(i=0; i<N; i++) {
-//         error[i] = 0.0;
-//     }
+	// Manage dangling nodes   
+	for (i=0; i<N; i++) {
+		for (j=0; j<N; j++) {
+			if (a[i][j] != 0.0) {
+				out_link[i] = out_link[i] + 1;
+			}
+		}
+	}
 
-//     init_opencl()；
+	/*********************** MATRIX STOCHASTIC-FIED  ***********************/
 
-//     size_t global_work_size[1];
-//     size_t local_work_size[1];
+	// Make the matrix stochastic
+	for (i=0; i<N; i++){
+		if (out_link[i] == 0){
+			// Deal with dangling nodes
+			for (j=0; j<N; j++){
+				a[i][j] = 1.0 / N;
+			}
+		} else {
+			for (j=0; j<N; j++){
+				if (a[i][j] != 0) {
+					a[i][j] = a[i][j] / out_link[i];
+				}
+			}
+		}
+	}
+    
+    // Transpose
+    float *at = new float[N*N];
+        
+    for(int i = 0; i < N; i++) {
+        for(int j = 0; j < N; j++) {
+            at[i + j * N] = a[i][j];
+        } 
+    }
 
-//     global_work_size[0] = N;
-//     local_work_size[0] = 1;
+	
+	/*************************** PageRank LOOP  **************************/
 
+	// Set the looping condition and the number of iterations 'k'
+	int looping = 1;
 
-//     // Use FPGA
-//     cl_mem matrix = clCreateBuffer(context, CL_MEM_READ_WRITE , N * N * sizeof(float), NULL, &status);
-// 	cl_mem RVector = clCreateBuffer(context, CL_MEM_READ_WRITE, N * sizeof(float), NULL, &status);
-//     cl_mem output = clCreateBuffer(context, CL_MEM_READ_WRITE, N * sizeof(float), NULL, &status);
-//     cl_mem errorArray = clCreateBuffer(context, CL_MEM_READ_WRITE, N * sizeof(float), NULL, &status);
+	// Initialize new p vector
+    float *p_new = new float[N];
+    for (i=0; i<N; i++){
+		p_new[i] = 0.0;
+    }
 
-// 	while (looping) {
+    float *error = (float*)malloc(sizeof(float) * N);
+    for(i=0; i<N; i++) {
+        error[i] = 0.0;
+    }
 
-//         clEnqueueWriteBuffer(queue[0], matrix, CL_FALSE, 0, N * N * sizeof(float), at, 0, NULL, NULL);
-//         clEnqueueWriteBuffer(queue[0], RVector, CL_FALSE, 0, N * sizeof(float), p, 0, NULL, NULL);
-//         clEnqueueWriteBuffer(queue[0], output, CL_FALSE, 0, N * sizeof(float), p_new, 0, NULL, NULL);
-//         clEnqueueWriteBuffer(queue[0], errorArray, CL_FALSE, 0, N * sizeof(float), error, 0, NULL, NULL);
+    string cl_name = "power.cl";
+    init_opencl(cl_name);
 
-//         clSetKernelArg(kernel[0], 0, sizeof(cl_mem), &matrix);
-//         clSetKernelArg(kernel[0], 1, sizeof(cl_mem), &RVector);
-//         clSetKernelArg(kernel[0], 2, sizeof(cl_mem), &output);
-//         clSetKernelArg(kernel[0], 3, sizeof(cl_mem), &errorArray);
-//         clSetKernelArg(kernel[0], 4, sizeof(cl_int), &N);
+    // Kernel.
+    const char *kernel_name = "fpgasort";
+    kernel[0] = clCreateKernel(program, kernel_name, &status);
+    checkError(status, "Failed to create kernel");
+    
+    size_t global_work_size = N;
 
-//         clEnqueueNDRangeKernel(queue[0], kernel[0], 1, NULL, global_work_size, local_work_size, 0, NULL, NULL);
+    //     // Allocate buffer on device and migrate data
+    cl_mem matrix = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+                                      N * N * sizeof(float), at, &status);
+    cl_mem RVector = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+                                      N * sizeof(float), p, &status);
+    cl_mem output = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+                                      N * sizeof(float), p_new, &status);
+    cl_mem errorArray = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+                                      N * sizeof(float), error, &status);
+        cl_mem *P_RVector = &RVector;
+         cl_mem *P_output = &output;
+	while (looping) {
+
+        clSetKernelArg(kernel[0], 0, sizeof(cl_mem), &matrix);
+        clSetKernelArg(kernel[0], 1, sizeof(cl_mem), P_RVector);
+        clSetKernelArg(kernel[0], 2, sizeof(cl_mem), P_output);
+        clSetKernelArg(kernel[0], 3, sizeof(cl_mem), &errorArray);
+        clSetKernelArg(kernel[0], 4, sizeof(cl_int), &N);
+
+        clEnqueueNDRangeKernel(queue[0], kernel[0], 1, NULL, &global_work_size, NULL, 0, NULL, NULL);
 //         clFinish(queue[0]);
         
-//         clEnqueueReadBuffer(queue[0], errorArray, CL_TRUE,0, N * sizeof(float), error, 0, NULL, NULL);
+        float *mapErr = (float *)clEnqueueMapBuffer(queue[0], errorArray, true, CL_MAP_READ, 0,
+                                                   sizeof(float) * N, 0, NULL, NULL, &status);
+	    float errorSum = 0.0;
+	    for(i=0; i<N; i++){
+	        errorSum +=  mapErr[i];
+	    }
+        clEnqueueUnmapMemObject(queue[0], errorArray, (void *)mapErr, 0, NULL, NULL);
+        cout << "Error is " << errorSum << endl;
 
-// 	    float errorSum = 0.0;
-// 	    for(i=0; i<N; i++){
-// 	        errorSum +=  errorSum + error[i];
-// 	    }
+	    //if two consecutive instances of pagerank vector are almost identical, stop
+	    if (errorSum < 0.000001){
+            clEnqueueReadBuffer(queue[0], output, CL_TRUE,0, N * sizeof(float), p_new, 0, NULL, NULL);
+            for (i=0; i<N;i++){
+	    	    p[i] = p_new[i];
+		    }
+            break;
+	    } 
+     
+         cl_mem *tmp = P_RVector;
+         P_RVector = P_output;
+         P_output = tmp;
+         
+        
+	}
 
-// 	    //if two consecutive instances of pagerank vector are almost identical, stop
-// 	    if (errorSum < 0.000001){
-// 	        looping = 0;
-//             clEnqueueReadBuffer(queue[0], output, CL_TRUE,0, N * sizeof(float), p_new, 0, NULL, NULL);
-//             for (i=0; i<N;i++){
-// 	    	    p[i] = p_new[i];
-// 		    }
-//             break;
-// 	    } else {
-//             cl_mem tmp = RVector;
-//             RVector = output;
-//             output = temp;
-//         }
-
-// 	}
-
-//     return 0;
-// }
-
-// // Initializes the OpenCL objects.
-// bool init_opencl()
-// {
-//     // printf("Initializing OpenCL\n");
-
-//     if (!setCwdToExeDir())
-//     {
-//         return false;
-//     }
-
-//     // Query the available OpenCL device.
-//     device.reset(getDevices(platform, CL_DEVICE_TYPE_ALL, &num_devices));
-//     // printf("Platform: %s\n", getPlatformName(platform).c_str());
-//     // printf("Using %d device(s)\n", num_devices);
-//     // for (unsigned i = 0; i < num_devices; ++i)
-//     // {
-//     //   printf("  %s\n", getDeviceName(device[i]).c_str());
-//     // }
-
-//     // Create the context.
-//     context = clCreateContext(NULL, num_devices, device, NULL, NULL, &status);
-//     checkError(status, "Failed to create context");
-
-//     // Create the program for all device. Use the first device as the
-//     // representative device (assuming all device are of the same type).
-
-//     // Read the file in from source
-//     FILE *program_handle = fopen("power.cl", "r");
-//     if (program_handle == NULL)
-//     {
-//         perror("Couldn't find the program file");
-//         exit(1);
-//     }
-//     fseek(program_handle, 0, SEEK_END);
-//     size_t program_size = ftell(program_handle);
-//     rewind(program_handle);
-//     char *program_buffer = (char *)malloc(program_size + 1);
-//     program_buffer[program_size] = '\0';
-//     fread(program_buffer, sizeof(char), program_size, program_handle);
-//     fclose(program_handle);
-
-//     // Create a program from the kernel source file
-//     program = clCreateProgramWithSource(context, 1, (const char **)&program_buffer, &program_size, &status);
-//     checkError(status, "Failed to create program");
-
-//     // Build the program that was just created.
-//     status = clBuildProgram(program, 0, NULL, "", NULL, NULL);
-//     checkError(status, "Failed to build program");
-
-//     // Create per-device objects.
-//     queue.reset(num_devices);
-//     kernel.reset(num_devices);
-//     for (unsigned i = 0; i < num_devices; ++i)
-//     {
-//         // Command queue.
-//         queue[i] = clCreateCommandQueue(context, device[i], CL_QUEUE_PROFILING_ENABLE, &status);
-//         checkError(status, "Failed to create command queue");
-
-//         // Kernel.
-//         const char *kernel_name = "fpgasort";
-//         kernel[i] = clCreateKernel(program, kernel_name, &status);
-//         checkError(status, "Failed to create kernel");
-//     }
-
-//     return true;
-// }
-
-// void cleanup()
-// {
-//     for (unsigned i = 0; i < num_devices; ++i)
-//     {
-//         if (kernel && kernel[i])
-//         {
-//             clReleaseKernel(kernel[i]);
-//         }
-//         if (queue && queue[i])
-//         {
-//             clReleaseCommandQueue(queue[i]);
-//         }
-//     }
-
-//     if (program)
-//     {
-//         clReleaseProgram(program);
-//     }
-//     if (context)
-//     {
-//         clReleaseContext(context);
-//     }
-// }
+    	printf ("Final Pagerank values:\n\n[");
+	for (i=0; i<N; i++){
+		std::cout << " " << p[i];
+		if(i!=(N-1)){ std::cout << ", "; }
+	}
+	printf("]\n\n");
+    return 0;
+}

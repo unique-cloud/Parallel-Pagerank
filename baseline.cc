@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <iostream>
 #include "pagerank.hh"
 // #include <sys/time.h>
 
 /* sequential implementation of the PageRank algorithm */
 
-int baseline(vector<Edge* >edges, const int N){
+int baseline(vector<Edge> &edges, const int N){
 
 	// Set the damping factor 'd'
 	float d = 0.85;
@@ -31,7 +32,7 @@ int baseline(vector<Edge* >edges, const int N){
 	// Update the matrix to 1.0 if there's an edge between nodes
     for(auto &edge : edges)
     {
-        a[edge->src][edge->dest] = 1;
+        a[edge.src][edge.dest] = 1;
     }
     /* DEBUG: print the adjacency matrix
     printf("\nThe adjacency matrix is :\n\n");
@@ -186,7 +187,8 @@ int baseline(vector<Edge* >edges, const int N){
 	    for(i=0; i<N; i++){
 	        error =  error + fabs(p_new[i] - p[i]);
 	    }
-
+        
+        std::cout<<"Error is: " << error<<endl;
 	    //if two consecutive instances of pagerank vector are almost identical, stop
 	    if (error < 0.000001){
 	        looping = 0;
@@ -204,11 +206,11 @@ int baseline(vector<Edge* >edges, const int N){
 	/*************************** CONCLUSIONS *******************************/		
 	// Print results
 	printf ("\nNumber of iteration to converge: %d \n\n", k); 
-	// printf ("Final Pagerank values:\n\n[");
-	// for (i=0; i<n; i++){
-	// 	printf("%f ", p[i]);
-	// 	if(i!=(n-1)){ printf(", "); }
-	// }
-	// printf("]\n\n");
+	printf ("Final Pagerank values:\n\n[");
+	for (i=0; i<N; i++){
+		std::cout << " " << p[i];
+		if(i!=(N-1)){ std::cout << ", "; }
+	}
+	printf("]\n\n");
 	return 0;
 }
