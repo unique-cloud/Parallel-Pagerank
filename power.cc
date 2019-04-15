@@ -117,7 +117,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 		error[i] = 0.0;
 	}
 
-	string cl_name = "power.cl";
+	string cl_name = "power";
 	init_opencl(cl_name);
 
 	// Kernel.

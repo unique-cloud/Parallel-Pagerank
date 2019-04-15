@@ -26,7 +26,7 @@ int edge_centric(vector<Edge> &edges, const int N, float *output_rank)
             sink_idx.push_back(i);
     }
 
-    string cl_name = "edge_centric.cl";
+    string cl_name = "edge_centric";
     init_opencl(cl_name);
 
     // Set kernels
