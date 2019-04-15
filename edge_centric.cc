@@ -51,7 +51,6 @@ int edge_centric(vector<Edge> &edges, const int N, float *output_rank)
     clSetKernelArg(kernel[0], 1, sizeof(cl_mem), (void *)&outCountBuffer);
     clSetKernelArg(kernel[0], 2, sizeof(cl_mem), (void *)&msgBuffer);
     clSetKernelArg(kernel[0], 3, sizeof(cl_mem), (void *)&rankBuffer);
-    clSetKernelArg(kernel[0], 4, sizeof(int), (void *)&N);
 
     clSetKernelArg(kernel[1], 0, sizeof(cl_mem), (void *)&msgBuffer);
     clSetKernelArg(kernel[1], 1, sizeof(cl_mem), (void *)&rankBuffer);

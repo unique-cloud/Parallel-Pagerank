@@ -11,9 +11,8 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 
 	// Set the damping factor 'd'
 	float d = DAMPING_FACTOR;
-
-	/********************** INITIALIZATION OF A **************************/
-
+    
+    // Initialize a
 	float **a = (float **)malloc(sizeof(float *) * N);
 	int i, j, node1, node2;
 
@@ -37,8 +36,8 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 	{
 		a[edge.src][edge.dest] = 1;
 	}
-	/********************** INITIALIZATION OF AT **************************/
-
+    
+	// Initialize the stochastic matrix
 	float **at = (float **)malloc(sizeof(float *) * N);
 
 	// Preallocate space for the transposed matrix 'at'
@@ -47,7 +46,7 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 		at[i] = (float *)malloc(sizeof(float) * N);
 	}
 
-	// Initialize all the transposed matrix to 0.0
+	// Initialize the stochastic matrix to 0.0
 	for (i = 0; i < N; i++)
 	{
 		for (j = 0; j < N; j++)
@@ -56,18 +55,16 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 		}
 	}
 
-	/********************** INITIALIZATION OF P **************************/
-
+	// Initialize the p[] vector
 	float p[N];
-
+    
 	// Initialize the p[] vector
 	for (i = 0; i < N; i++)
 	{
 		p[i] = 1.0 / N;
 	}
 
-	/******************* INITIALIZATION OF OUTPUT LINK ********************/
-
+	// Initialize the output link 
 	int out_link[N];
 
 	// Initialize the output link vector
@@ -88,19 +85,7 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 		}
 	}
 
-	// // Print outlink vector
-	// printf("\nPer-node out link: \n\n     [");
-	// for (i=0; i<n; i++){
-	// 	printf("%d", out_link[i]);
-	// 	if(i != (n-1)){
-	// 		printf(", ");
-	// 	}
-	// }
-	// printf("]\n\n");
-
-	/*********************** MATRIX STOCHASTIC-FIED  ***********************/
-
-	// Make the matrix stochastic
+	// Make the stochastic matrix 
 	for (i = 0; i < N; i++)
 	{
 		if (out_link[i] == 0)
@@ -123,17 +108,6 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 		}
 	}
 
-	/* DEBUG: print the stochastic matrix
-	printf("\nStochastic matrix: \n");
-	for (i=0; i<n; i++){
-		for (j=0; j<n; j++){
-			printf("%f ", a[i][j]);
-		}
-		printf("\n");
-	}*/
-
-	/************************** MATRIX IS TRANSPOSED **********************/
-
 	// Transpose the matrix
 	for (i = 0; i < N; i++)
 	{
@@ -142,21 +116,6 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 			at[j][i] = a[i][j];
 		}
 	}
-
-	/* DEBUG: print transposed matrix
-	printf("\nTransposed matrix: \n");
-	printf("[");
-	for (i=0; i<n; i++){
-		printf("[");
-		for (j=0; j<n; j++){
-			printf("%f", at[i][j]);
-			if(j!=(n-1)){ printf(", "); }
-		}
-		printf("], ");
-	}
-	printf("]\n");*/
-
-	/*************************** PageRank LOOP  **************************/
 
 	// Set the looping condition and the number of iterations 'k'
 	int looping = 1;
@@ -183,23 +142,12 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 			}
 		}
 
-		/*DEBUG: print pnew before the damping factor multiplication
-		for (i=0; i<n; i++){
-	      printf("%f ", p_new[i]);
-	    }*/
-
-		// Update p_new (using the damping factor)
+		// Update p_new 
 		for (i = 0; i < N; i++)
 		{
 			p_new[i] = d * p_new[i] + (1.0 - d) / N;
 		}
 
-		/*DEBUG: print pnew after the damping factor multiplication
-		for (i=0; i<n; i++){
-	      printf("%f ", p_new[i]);
-	    }*/
-
-		// TERMINATION: check if we have to stop
 		float error = 0.0;
 		for (i = 0; i < N; i++)
 		{

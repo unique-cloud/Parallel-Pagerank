@@ -19,8 +19,7 @@ typedef struct
  *  We can't handle sink nodes here, thus we do it somewhere else.
  */
 __kernel void scatter(__global Edge *edge_arr, __global uint *outCount_arr,
-                      __global Msg *msg_arr, __global float *rank,
-                      const uint num_nodes)
+                      __global Msg *msg_arr, __global float *rank)
 {
     uint idx = get_global_id(0);
     Edge edge = edge_arr[idx];

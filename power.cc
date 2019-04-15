@@ -6,14 +6,18 @@
 
 using namespace std;
 
+/* OpenCL Power Method implementation of the PageRank algorithm */
+
 int power(vector<Edge> &edges, const int N, float *output_rank)
 {
-
+    // Defind the dumping factor
 	float d = 0.85;
-
+    
+    // Initialize a
 	float **a = (float **)malloc(sizeof(float *) * N);
 	int i, j, node1, node2;
-
+    
+    // Preallocate the adjacency matrix 'a'
 	for (i = 0; i < N; i++)
 	{
 		a[i] = (float *)malloc(sizeof(float) * N);
@@ -33,33 +37,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 		a[edge.src][edge.dest] = 1;
 	}
 
-	/********************** INITIALIZATION OF AT **************************/
-
-	//     float **at = (float**)malloc(sizeof(float*) * N);
-
-	//     // Preallocate space for the transposed matrix 'at'
-	// 	for (i = 0; i < N; i++) {
-	// 	    at[i] = (float*)malloc(sizeof(float) * N);
-	// 	}
-
-	// 	// Initialize all the transposed matrix to 0.0
-	// 	for (i=0; i<N; i++){
-	// 		for (j=0; j<N; j++){
-	// 			at[i][j] = 0.0;
-	// 		}
-	// 	}
-
-	//     	/************************** MATRIX IS TRANSPOSED **********************/
-
-	// 	// Transpose the matrix
-	// 	for (i=0; i<N; i++){
-	// 		for (j=0; j<N; j++){
-	// 			at[j][i] = a[i][j];
-	// 		}
-	// 	}
-
-	/********************** INITIALIZATION OF P **************************/
-
+	// Initialize the page rank array
 	float *p = new float[N];
 
 	// Initialize the p[] vector
@@ -68,8 +46,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 		p[i] = 1.0 / N;
 	}
 
-	/******************* INITIALIZATION OF OUTPUT LINK ********************/
-
+	// Initialize the output link 
 	int *out_link = new int[N];
 
 	// Initialize the output link vector
@@ -89,8 +66,6 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 			}
 		}
 	}
-
-	/*********************** MATRIX STOCHASTIC-FIED  ***********************/
 
 	// Make the matrix stochastic
 	for (i = 0; i < N; i++)
@@ -115,7 +90,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 		}
 	}
 
-	// Transpose
+	// Transpose to make the proper stochastic matrix
 	float *at = new float[N * N];
 
 	for (int i = 0; i < N; i++)
@@ -126,9 +101,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 		}
 	}
 
-	/*************************** PageRank LOOP  **************************/
-
-	// Set the looping condition and the number of iterations 'k'
+	// Looping the page rank algorithm
 	int looping = 1;
 
 	// Initialize new p vector
@@ -154,7 +127,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 
 	size_t global_work_size = N;
 
-	//     // Allocate buffer on device and migrate data
+	// Allocate buffer on device and migrate data
 	cl_mem matrix = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
 								   N * N * sizeof(float), at, &status);
 	cl_mem RVector = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
@@ -185,12 +158,12 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 			errorSum += mapErr[i];
 		}
 		clEnqueueUnmapMemObject(queue[0], errorArray, (void *)mapErr, 0, NULL, NULL);
-		cout << "Error is " << errorSum << endl;
-
+        std::cout << "Power Error is: " << errorSum << endl;
 		//if two consecutive instances of pagerank vector are almost identical, stop
-		if (errorSum < 0.000001)
+		if (errorSum < DIFF_ERROR)
 		{
 			clEnqueueReadBuffer(queue[0], output, CL_TRUE, 0, N * sizeof(float), p_new, 0, NULL, NULL);
+             
 			for (i = 0; i < N; i++)
 			{
 				output_rank[i] = p_new[i];
@@ -213,5 +186,6 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 	// 	}
 	// }
 	// printf("]\n\n");
+    
 	return 0;
 }
