@@ -1,12 +1,12 @@
 #define DAMPING_FACTOR (0.85)
 
-typedef struct
+typedef struct __attribute__ ((packed))
 {
     int src;
     int dest;
 } Edge;
 
-typedef struct
+typedef struct __attribute__ ((packed))
 {
     int dest;
     float val;

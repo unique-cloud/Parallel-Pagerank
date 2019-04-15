@@ -24,12 +24,12 @@ extern cl_program program;
 extern scoped_array<cl_kernel> kernel;
 extern cl_int status;
 
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     int dest;
     float val;
 } Msg;
 
-typedef struct {
+typedef struct __attribute__ ((packed)) {
     int src;
     int dest;
 } Edge;
