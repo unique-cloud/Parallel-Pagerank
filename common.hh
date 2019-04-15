@@ -1,20 +1,21 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#ifdef __APPLE__
+#ifdef APPLE
 #include <OpenCL/opencl.h>
 #else
-#include <CL/cl.h>
+#include "CL/opencl.h"
+#include "AOCL_Utils.h"
+
+using namespace aocl_utils;
 #endif
 #include <string>
-#include "AOCL_Utils.h"
 
 #define DIFF_ERROR (0.000001)
 #define DAMPING_FACTOR (0.85)
 
-using namespace aocl_utils;
-
 // OpenCL runtime configuration
+extern cl_platform_id platform;
 extern unsigned num_devices;
 extern scoped_array<cl_device_id> device;
 extern cl_context context;

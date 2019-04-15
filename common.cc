@@ -1,125 +1,224 @@
 #include "common.hh"
 
+#ifdef APPLE
 // OpenCL runtime configuration
-unsigned num_devices = 0;
-scoped_array<cl_device_id> device;
+cl_platform_id platform = NULL;
+unsigned num_devices = 1;
+cl_device_id device; // num_devices elements
 cl_context context = NULL;
-scoped_array<cl_command_queue> queue;
+cl_command_queue queue; // num_devices elements
 cl_program program = NULL;
-scoped_array<cl_kernel> kernel;
-cl_int status;
+cl_kernel kernel; // num_devices elements
+cl_int status;                  // error code checking
+#else
+// OpenCL runtime configuration
+cl_platform_id platform = NULL;
+unsigned num_devices = 0;
+scoped_array<cl_device_id> device; // num_devices elements
+cl_context context = NULL;
+scoped_array<cl_command_queue> queue; // num_devices elements
+cl_program program = NULL;
+scoped_array<cl_kernel> kernel; // num_devices elements
+cl_int status;                  // error code checking
+#endif
+
+#ifdef APPLE
+static int LoadTextFromFile(const char *file_name, char **result_string, size_t *string_len);
+#define LOCAL_MEM_SIZE = 1024;
+void _checkError(int line,
+								 const char *file,
+								 cl_int error,
+                 const char *msg,
+                 ...);
+
+#define checkError(status, ...) _checkError(__LINE__, __FILE__, status, __VA_ARGS__)
+#endif
 
 // Initializes the OpenCL objects.
-bool init_opencl(std::string cl_name)
-{
-    // printf("Initializing OpenCL\n");
+bool init_opencl() {
+  int err;
 
-    if (!setCwdToExeDir())
-    {
-        return false;
-    }
+  printf("Initializing OpenCL\n");
+#ifdef APPLE
+  int gpu = 1;
+  err = clGetDeviceIDs(NULL, gpu ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU, 1, &device, NULL);
+  if (err != CL_SUCCESS)
+  {
+    fprintf(stderr, "Error: Failed to create a device group!\n");
+    return EXIT_FAILURE;
+  }
+  // Create the context.
+  context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
+  checkError(status, "Failed to create context");
+#else 
+  if(!setCwdToExeDir()) {
+    return false;
+  }
 
-    cl_uint num_platforms_available;
-    // Get the number of OpenCL capable platforms avaiable
-    status = clGetPlatformIDs(0, NULL, &num_platforms_available);
-    checkError(status, "Failed to get platform");
-    if (num_platforms_available == 0)
-    {
-        printf("No OpenCL capable platforms found!\n");
-        exit(EXIT_FAILURE);
-    }
+  // Get the OpenCL platform.
+  platform = findPlatform("Altera");
+ if(platform == NULL) {
+   printf("ERROR: Unable to find Altera OpenCL platform.\n");
+   return false;
+ }
 
-    cl_platform_id cl_platforms[num_platforms_available];
-    status = clGetPlatformIDs(num_platforms_available, cl_platforms, NULL);
-    checkError(status, "Failed to get platform");
+  // Query the available OpenCL device.
+  device.reset(getDevices(platform, CL_DEVICE_TYPE_ALL, &num_devices));
+  printf("Platform: %s\n", getPlatformName(platform).c_str());
+  printf("Using %d device(s)\n", num_devices);
+  for(unsigned i = 0; i < num_devices; ++i) {
+    printf("  %s\n", getDeviceName(device[i]).c_str());
+  }
+  // Create the context.
+  context = clCreateContext(NULL, num_devices, device, NULL, NULL, &status);
+  checkError(status, "Failed to create context");
+#endif
 
-    // Query the available OpenCL device.
-    device.reset(getDevices(cl_platforms[0], CL_DEVICE_TYPE_ALL, &num_devices));
-    printf("Platform: %s\n", getPlatformName(cl_platforms[0]).c_str());
-    printf("Using %d device(s)\n", num_devices);
-    for (unsigned i = 0; i < num_devices; ++i)
-    {
-        printf("  %s\n", getDeviceName(device[i]).c_str());
-    }
+  // Create the program for all device. Use the first device as the
+  // representative device (assuming all device are of the same type).
+#ifndef APPLE
+  std::string binary_file = getBoardBinaryFile("fpgasort", device[0]);
+  printf("Using AOCX: %s\n", binary_file.c_str());
+  program = createProgramFromBinary(context, binary_file.c_str(), device, num_devices);
 
-    // Create the context.
-    context = clCreateContext(NULL, num_devices, device, NULL, NULL, &status);
-    checkError(status, "Failed to create context");
+  // Build the program that was just created.
+  status = clBuildProgram(program, 0, NULL, "", NULL, NULL);
+  checkError(status, "Failed to build program");
 
-    // Create the program for all device. Use the first device as the
-    // representative device (assuming all device are of the same type).
+  //Create per-device objects.
+  queue.reset(num_devices);
+  kernel.reset(num_devices);
+  for(unsigned i = 0; i < num_devices; ++i) {
+    // Command queue.
+    queue[i] = clCreateCommandQueue(context, device[i], CL_QUEUE_PROFILING_ENABLE, &status);
+    checkError(status, "Failed to create command queue");
 
-    // Read the file in from source
-    FILE *program_handle = fopen(cl_name.c_str(), "r");
-    if (program_handle == NULL)
-    {
-        perror("Couldn't find the program file");
-        exit(1);
-    }
-    fseek(program_handle, 0, SEEK_END);
-    size_t program_size = ftell(program_handle);
-    rewind(program_handle);
-    char *program_buffer = (char *)malloc(program_size + 1);
-    program_buffer[program_size] = '\0';
-    fread(program_buffer, sizeof(char), program_size, program_handle);
-    fclose(program_handle);
+    // Kernel.
+    const char *kernel_name = "fpgasort";
+    kernel[i] = clCreateKernel(program, kernel_name, &status);
+    checkError(status, "Failed to create kernel");
 
-    // Create a program from the kernel source file
-    program = clCreateProgramWithSource(context, 1, (const char **)&program_buffer, &program_size, &status);
-    checkError(status, "Failed to create program");
+  }
+#else
+  char *source = 0;
+  size_t length = 0;
+  LoadTextFromFile("fpgasort.cl", &source, &length);
+  const char *kernel_name = "fpgasort";
+  program = clCreateProgramWithSource(context, 1, (const char **) & source, NULL, &err);
 
-    // Build the program that was just created.
-    status = clBuildProgram(program, 0, NULL, "", NULL, NULL);
-    // checkError(status, "Failed to build program");
-    if (status == CL_BUILD_PROGRAM_FAILURE)
-    {
-        // Determine the size of the log
-        size_t log_size;
-        clGetProgramBuildInfo(program, device[0], CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
+  // Build the program that was just created.
+  status = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+  checkError(status, "Failed to build program");
 
-        // Allocate memory for the log
-        char *log = (char *)malloc(log_size);
-
-        // Get the log
-        clGetProgramBuildInfo(program, device[0], CL_PROGRAM_BUILD_LOG, log_size, log, NULL);
-
-        // Print the log
-        printf("%s\n", log);
-    }
-
-    // Create per-device objects.
-    queue.reset(num_devices);
-    kernel.reset(num_devices);
-    for (unsigned i = 0; i < num_devices; ++i)
-    {
-        // Command queue.
-        queue[i] = clCreateCommandQueue(context, device[i], CL_QUEUE_PROFILING_ENABLE, &status);
-        checkError(status, "Failed to create command queue");
-    }
-
-    return true;
+  queue = clCreateCommandQueue(context, device, CL_QUEUE_PROFILING_ENABLE, &status);
+  kernel = clCreateKernel(program, kernel_name, &status);
+#endif
+  return true;
 }
 
-void cleanup()
+void cleanup() {
+#ifndef APPLE
+  for(unsigned i = 0; i < num_devices; ++i) {
+    if(kernel && kernel[i]) {
+      clReleaseKernel(kernel[i]);
+    }
+    if(queue && queue[i]) {
+      clReleaseCommandQueue(queue[i]);
+    }
+  }
+#else
+  clReleaseKernel(kernel);
+  clReleaseCommandQueue(queue);
+#endif
+  if(program) {
+    clReleaseProgram(program);
+  }
+  if(context) {
+    clReleaseContext(context);
+  }
+}
+#ifdef APPLE
+static int LoadTextFromFile(
+    const char *file_name, char **result_string, size_t *string_len)
 {
-    for (unsigned i = 0; i < num_devices; ++i)
+    int fd;
+    unsigned file_len;
+    struct stat file_status;
+    int ret;
+ 
+    *string_len = 0;
+    fd = open(file_name, O_RDONLY);
+    if (fd == -1)
     {
-        if (kernel && kernel[i])
-        {
-            clReleaseKernel(kernel[i]);
-        }
-        if (queue && queue[i])
-        {
-            clReleaseCommandQueue(queue[i]);
-        }
+        printf("Error opening file %s\n", file_name);
+        return -1;
     }
+    ret = fstat(fd, &file_status);
+    if (ret)
+    {
+        printf("Error reading status for file %s\n", file_name);
+        return -1;
+    }
+    file_len = file_status.st_size;
+ 
+    *result_string = (char*)calloc(file_len + 1, sizeof(char));
+    ret = read(fd, *result_string, file_len);
+    if (!ret)
+    {
+        printf("Error reading from file %s\n", file_name);
+        return -1;
+    }
+ 
+    close(fd);
+ 
+    *string_len = file_len;
+    return 0;
+}
 
-    if (program)
-    {
-        clReleaseProgram(program);
-    }
-    if (context)
-    {
-        clReleaseContext(context);
+// High-resolution timer.
+double getCurrentTimestamp() {
+#ifdef _WIN32 // Windows
+  // Use the high-resolution performance counter.
+
+  static LARGE_INTEGER ticks_per_second = {};
+  if(ticks_per_second.QuadPart == 0) {
+    // First call - get the frequency.
+    QueryPerformanceFrequency(&ticks_per_second);
+  }
+
+  LARGE_INTEGER counter;
+  QueryPerformanceCounter(&counter);
+
+  double seconds = double(counter.QuadPart) / double(ticks_per_second.QuadPart);
+  return seconds;
+#else         // Linux
+  timespec a;
+  clock_gettime(CLOCK_MONOTONIC, &a);
+  return (double(a.tv_nsec) * 1.0e-9) + double(a.tv_sec);
+#endif
+}
+
+void _checkError(int line,
+								 const char *file,
+								 cl_int error,
+                 const char *msg,
+                 ...) {
+	// If not successful
+	if(error != CL_SUCCESS) {
+		// Print line and file
+    printf("ERROR: ");
+    printf("\nLocation: %s:%d\n", file, line);
+
+    // Print custom message.
+    va_list vl;
+    va_start(vl, msg);
+    vprintf(msg, vl);
+    printf("\n");
+    va_end(vl);
+
+    // Cleanup and bail.
+    cleanup();
+    exit(error);
     }
 }
+#endif
