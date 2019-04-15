@@ -24,8 +24,11 @@ TARGET = pagerank
 # endif
 
 # Libraries to use, objects to compile
-SRCS = pagerank.cc baseline.cc power.cc edge_centric.cc deviceInfoQuery.cc common.cc
-SRCS_FILES = $(foreach F, $(SRCS), ./$(F))
+COMMON_SRCS = pagerank.cc baseline.cc power.cc edge_centric.cc deviceInfoQuery.cc
+SRCS = $(COMMON_SRCS) common.linux.cc
+AOCL_SRCS = $(COMMON_SRCS) common.cc
+SRCS_FILES = $(foreach F, $(SRCS), ./$(F)) 
+AOCL_SRCS_FILES = $(foreach F, $(AOCL_SRCS), ./$(F))
 OBJS=$(SRCS:.c=.o)
 COMMON_FILES = ./common/src/AOCL_Utils.cpp
 CXX_FLAGS =-lm -O3 -g -std=c++11
@@ -42,15 +45,16 @@ AOCL_LINK_CONFIG=$(shell aocl link-config --arm)
 
 
 # Make it all!
-all : 
-#	$ g++ $(SRCS_FILES) $(COMMON_FILES) $(CXX_FLAGS) -o $(TARGET)  $(COMPILE_CONFIG) $(LINK_CONFIG)
-	$(CROSS-COMPILE)g++ $(SRCS_FILES) $(COMMON_FILES) $(CXX_FLAGS) -o $(TARGET)  $(AOCL_COMPILE_CONFIG) $(AOCL_LINK_CONFIG) 
-#	$(CROSS-COMPILE)g++ $(SRCS_FILES) $(COMMON_FILES) $(CXX_FLAGS) -c   $(AOCL_COMPILE_CONFIG) $(AOCL_LINK_CONFIG)
-#	$(CROSS-COMPILE)g++ $(SRCS_FILES) $(COMMON_FILES) $(CXX_FLAGS) -c   $(AOCL_COMPILE_CONFIG) $(AOCL_LINK_CONFIG)
-#	$(CROSS-COMPILE)g++ $(CXX_FLAGS) $(OBJS) -o $(TARGET)  $(AOCL_COMPILE_CONFIG) $(AOCL_LINK_CONFIG)
+all: 
+	$ g++ $(SRCS_FILES) $(COMMON_FILES) $(CXX_FLAGS) -o $(TARGET)  $(COMPILE_CONFIG) $(LINK_CONFIG)
 
-fpgasort.aocx: 
-	aoc fpgasort.cl -o fpgasort.aocx --board de1soc_sharedonly
+fpgapagerank :
+	$(CROSS-COMPILE)g++ $(AOCL_SRCS_FILES) $(COMMON_FILES) $(CXX_FLAGS) -o $(TARGET)  $(AOCL_COMPILE_CONFIG) $(AOCL_LINK_CONFIG) 
+
+edge_centric.aocx: 
+	aoc edge_centric.cl -o edge_centric.aocx --board de1soc_sharedonly
+power.aocx:
+	aoc power.cl -o power.aocx --board de1soc_sharedonly
 
 # Standard make targets
 clean :
