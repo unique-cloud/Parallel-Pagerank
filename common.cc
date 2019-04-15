@@ -35,7 +35,7 @@ void _checkError(int line,
 #endif
 
 // Initializes the OpenCL objects.
-bool init_opencl() {
+bool init_opencl(std::string cl_name) {
   int err;
 
   printf("Initializing OpenCL\n");
@@ -77,7 +77,7 @@ bool init_opencl() {
   // Create the program for all device. Use the first device as the
   // representative device (assuming all device are of the same type).
 #ifndef APPLE
-  std::string binary_file = getBoardBinaryFile("fpgasort", device[0]);
+  std::string binary_file = getBoardBinaryFile(cl_name.c_str(), device[0]);
   printf("Using AOCX: %s\n", binary_file.c_str());
   program = createProgramFromBinary(context, binary_file.c_str(), device, num_devices);
 
@@ -92,12 +92,6 @@ bool init_opencl() {
     // Command queue.
     queue[i] = clCreateCommandQueue(context, device[i], CL_QUEUE_PROFILING_ENABLE, &status);
     checkError(status, "Failed to create command queue");
-
-    // Kernel.
-    const char *kernel_name = "fpgasort";
-    kernel[i] = clCreateKernel(program, kernel_name, &status);
-    checkError(status, "Failed to create kernel");
-
   }
 #else
   char *source = 0;
