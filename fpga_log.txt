@@ -1,0 +1,302 @@
+Number of nodes = 1000
+Number of edges = 9951
+The total number of edges read in: 9951
+Initializing OpenCL
+Platform: Altera SDK for OpenCL
+Using 1 device(s)
+  de1soc_sharedonly : Cyclone V SoC Development Kit
+Using AOCX: edge_centric.aocx
+Iteration: 1
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00004167 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00004000 to 1
+Produced msg with value 0.00005882 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00100000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00100000, rank new is 0.01514007
+Sink value is 0.00000000, rank pre is 0.00100000, rank new is 0.00028266
+Error is 0.796405
+Iteration: 2
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00001049 to 1
+Produced msg with value 0.00002375 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.01514007, rank new is 0.00705985
+Sink value is 0.00000000, rank pre is 0.00028266, rank new is 0.00017713
+Error is 0.154853
+Iteration: 3
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000964 to 1
+Produced msg with value 0.00003219 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00705985, rank new is 0.00488883
+Sink value is 0.00000000, rank pre is 0.00017713, rank new is 0.00017138
+Error is 0.0513244
+Iteration: 4
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000753 to 1
+Produced msg with value 0.00002374 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00488883, rank new is 0.00405541
+Sink value is 0.00000000, rank pre is 0.00017138, rank new is 0.00017128
+Error is 0.0172262
+Iteration: 5
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000729 to 1
+Produced msg with value 0.00001955 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00405541, rank new is 0.00373065
+Sink value is 0.00000000, rank pre is 0.00017128, rank new is 0.00017116
+Error is 0.00661013
+Iteration: 6
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000722 to 1
+Produced msg with value 0.00001778 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00373065, rank new is 0.00361074
+Sink value is 0.00000000, rank pre is 0.00017116, rank new is 0.00017112
+Error is 0.00246409
+Iteration: 7
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001707 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00361074, rank new is 0.00356385
+Sink value is 0.00000000, rank pre is 0.00017112, rank new is 0.00017111
+Error is 0.000967653
+Iteration: 8
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001680 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00356385, rank new is 0.00354590
+Sink value is 0.00000000, rank pre is 0.00017111, rank new is 0.00017110
+Error is 0.000375848
+Iteration: 9
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001669 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00354590, rank new is 0.00353879
+Sink value is 0.00000000, rank pre is 0.00017110, rank new is 0.00017110
+Error is 0.000151261
+Iteration: 10
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001665 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00353879, rank new is 0.00353600
+Sink value is 0.00000000, rank pre is 0.00017110, rank new is 0.00017110
+Error is 6.05081e-05
+Iteration: 11
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001663 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00353600, rank new is 0.00353486
+Sink value is 0.00000000, rank pre is 0.00017110, rank new is 0.00017110
+Error is 2.49295e-05
+Iteration: 12
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001663 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00353486, rank new is 0.00353441
+Sink value is 0.00000000, rank pre is 0.00017110, rank new is 0.00017110
+Error is 1.02322e-05
+Iteration: 13
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001662 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00353441, rank new is 0.00353422
+Sink value is 0.00000000, rank pre is 0.00017110, rank new is 0.00017110
+Error is 4.30454e-06
+Iteration: 14
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001662 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00353422, rank new is 0.00353414
+Sink value is 0.00000000, rank pre is 0.00017110, rank new is 0.00017110
+Error is 1.81347e-06
+Iteration: 15
+Edge from 0 to 1
+OutCount of 0 is 24
+Global size is 9951
+Produced msg with value 0.00000625 to 1
+Edge from 7 to 1
+OutCount of 7 is 25
+Edge from 15 to 1
+OutCount of 15 is 17
+Produced msg with value 0.00000720 to 1
+Produced msg with value 0.00001662 to 1
+Global size is 1000
+Sink value is 0.00000000, rank pre is 0.00015000, rank new is 0.00015000
+Sink value is 0.00000000, rank pre is 0.00353414, rank new is 0.00353411
+Sink value is 0.00000000, rank pre is 0.00017110, rank new is 0.00017110
+Error is 7.78033e-07
+Using edge centric method: 1565157
+Error is: 0.705676
+Error is: 0.26031
+Error is: 0.100405
+Error is: 0.0523764
+Error is: 0.0299054
+Error is: 0.0172853
+Error is: 0.0104399
+Error is: 0.00645918
+Error is: 0.00403528
+Error is: 0.00256594
+Error is: 0.00168245
+Error is: 0.0011216
+Error is: 0.000847513
+Error is: 0.000669298
+Error is: 0.000560701
+Error is: 0.000474334
+Error is: 0.000401827
+Error is: 0.000340557
+Error is: 0.000288202
+Error is: 0.000244194
+Error is: 0.000206683
+Error is: 0.000175053
+Error is: 0.000148603
+Error is: 0.000125896
+Error is: 0.000106739
+Error is: 9.00883e-05
+Error is: 7.62533e-05
+Error is: 6.46148e-05
+Error is: 5.49906e-05
+Error is: 4.62519e-05
+Error is: 3.94435e-05
+Error is: 3.3388e-05
+Error is: 2.85577e-05
+Error is: 2.40767e-05
+Error is: 2.03053e-05
+Error is: 1.72973e-05
+Error is: 1.45163e-05
+Error is: 1.23001e-05
+Error is: 1.0403e-05
+Error is: 8.99695e-06
+Error is: 7.5335e-06
+Error is: 6.36469e-06
+Error is: 5.40214e-06
+Error is: 4.44264e-06
+Error is: 3.71589e-06
+Error is: 3.20422e-06
+Error is: 2.92732e-06
+Error is: 2.50302e-06
+Error is: 2.07676e-06
+Error is: 1.67964e-06
+Error is: 1.42402e-06
+Error is: 1.1567e-06
+Error is: 9.99164e-07
