@@ -1,0 +1,124 @@
+Number of nodes = 6012
+Number of edges = 23875
+The total number of edges read in: 23875
+Initializing OpenCL
+Platform: Altera SDK for OpenCL
+Using 1 device(s)
+  de1soc_sharedonly : Cyclone V SoC Development Kit
+Using AOCX: power.aocx
+Power Error is: 0.490736
+Power Error is: 0.25542
+Power Error is: 0.139914
+Power Error is: 0.0824913
+Power Error is: 0.0527651
+Power Error is: 0.0343336
+Power Error is: 0.0235694
+Power Error is: 0.0161458
+Power Error is: 0.0117587
+Power Error is: 0.00848863
+Power Error is: 0.00651221
+Power Error is: 0.00506994
+Power Error is: 0.00409856
+Power Error is: 0.00331041
+Power Error is: 0.00271436
+Power Error is: 0.00221075
+Power Error is: 0.00182072
+Power Error is: 0.00148836
+Power Error is: 0.0012277
+Power Error is: 0.00100863
+Power Error is: 0.00083383
+Power Error is: 0.000688183
+Power Error is: 0.000566726
+Power Error is: 0.000469961
+Power Error is: 0.000386044
+Power Error is: 0.00031956
+Power Error is: 0.000266251
+Power Error is: 0.000219686
+Power Error is: 0.00017976
+Power Error is: 0.000149702
+Power Error is: 0.000123918
+Power Error is: 0.000103155
+Power Error is: 8.59054e-05
+Power Error is: 7.26308e-05
+Power Error is: 6.00571e-05
+Power Error is: 5.04201e-05
+Power Error is: 4.19727e-05
+Power Error is: 3.52059e-05
+Power Error is: 2.84836e-05
+Power Error is: 2.35804e-05
+Power Error is: 1.98737e-05
+Power Error is: 1.6153e-05
+Power Error is: 1.32827e-05
+Power Error is: 1.1086e-05
+Power Error is: 9.08953e-06
+Power Error is: 7.50896e-06
+Power Error is: 6.27745e-06
+Power Error is: 5.17195e-06
+Power Error is: 4.31568e-06
+Power Error is: 3.58756e-06
+Power Error is: 2.98101e-06
+Power Error is: 2.47283e-06
+Power Error is: 2.06858e-06
+Power Error is: 1.75679e-06
+Power Error is: 1.4333e-06
+Power Error is: 1.19078e-06
+Power Error is: 9.9745e-07
+Using power method: 65667768
+Error is: 0.490721
+Error is: 0.255429
+Error is: 0.139919
+Error is: 0.0824974
+Error is: 0.052766
+Error is: 0.0343346
+Error is: 0.0235741
+Error is: 0.0161451
+Error is: 0.0117587
+Error is: 0.0084905
+Error is: 0.00651346
+Error is: 0.00506929
+Error is: 0.00410003
+Error is: 0.0033098
+Error is: 0.0027154
+Error is: 0.00221046
+Error is: 0.00182399
+Error is: 0.00149121
+Error is: 0.00122965
+Error is: 0.00100942
+Error is: 0.000834207
+Error is: 0.000685602
+Error is: 0.000567259
+Error is: 0.000470143
+Error is: 0.00038735
+Error is: 0.000320071
+Error is: 0.000264273
+Error is: 0.00022103
+Error is: 0.000181952
+Error is: 0.000152431
+Error is: 0.000124945
+Error is: 0.000103546
+Error is: 8.588e-05
+Error is: 7.2186e-05
+Error is: 5.94853e-05
+Error is: 4.92761e-05
+Error is: 4.11067e-05
+Error is: 3.36602e-05
+Error is: 2.78891e-05
+Error is: 2.35902e-05
+Error is: 1.94214e-05
+Error is: 1.6361e-05
+Error is: 1.32723e-05
+Error is: 1.10304e-05
+Error is: 9.41373e-06
+Error is: 7.81719e-06
+Error is: 6.38815e-06
+Error is: 5.44764e-06
+Error is: 4.42616e-06
+Error is: 3.66822e-06
+Error is: 3.07378e-06
+Error is: 2.58085e-06
+Error is: 2.1698e-06
+Error is: 1.82915e-06
+Error is: 1.51058e-06
+Error is: 1.27058e-06
+Error is: 1.10487e-06
+Error is: 9.908e-07
