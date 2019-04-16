@@ -79,6 +79,7 @@ int edge_centric(vector<Edge> &edges, const int N, float *output_rank)
         for (auto &idx : sink_idx)
         {
             sink_val += mapRank[idx];
+            cout << "Got rank value of sink node "<<idx<<" is " << mapRank[idx] << endl;
         }
         sink_val /= N;
         cout << "Sink value outside is " << sink_val << endl;
