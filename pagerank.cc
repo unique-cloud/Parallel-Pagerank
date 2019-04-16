@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     /************************************READ DATASET***********************************/
     // Open dataset
     string filename(argv[1]);
-    ifstream infile(filename, ios::in);
+    ifstream infile(filename.c_str(), ios::in);
     if (!infile)
     {
         cerr << "Cannot open the file" << endl;

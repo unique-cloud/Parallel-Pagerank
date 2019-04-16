@@ -44,8 +44,8 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 
 	// Initialize new p vector
     float *p = new float[N];
-	float *p_new = new float[N]{0.0};
-    float *error = new float[N]{0.0};
+	float *p_new = new float[N];
+    float *error = new float[N];
     
     for(int i = 0; i < N; ++i)
     {
