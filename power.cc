@@ -38,7 +38,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
     vector<Element> p_matrix; 
     for(auto &e : edges)
     {
-        Element ele = {e.src, e.dest, 1 / out_link[e.src]};
+        Element ele = {e.src, e.dest, 1.0 / out_link[e.src]};
         p_matrix.push_back(ele);
     }
 
@@ -77,8 +77,6 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
     int num_edges = edges.size();
 
     clSetKernelArg(kernel[0], 0, sizeof(cl_mem), (void *)&matrixBuffer);
-	clSetKernelArg(kernel[0], 1, sizeof(cl_mem), (void *)P_RVector);
-	clSetKernelArg(kernel[0], 2, sizeof(cl_mem), (void *)P_output);
 	clSetKernelArg(kernel[0], 3, sizeof(cl_mem), (void *)&errorBuffer);
 	clSetKernelArg(kernel[0], 5, sizeof(cl_int), (void *)&num_edges);
     
@@ -96,6 +94,8 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
         clEnqueueUnmapMemObject(queue[0], (*P_RVector), (void *)mapRank, 0, NULL, NULL);
         
         clSetKernelArg(kernel[0], 4, sizeof(cl_int), &sink_value);
+        clSetKernelArg(kernel[0], 1, sizeof(cl_mem), (void *)P_RVector);
+        clSetKernelArg(kernel[0], 2, sizeof(cl_mem), (void *)P_output);
         
 		clEnqueueNDRangeKernel(queue[0], kernel[0], 1, NULL, &global_work_size, NULL, 0, NULL, NULL);
 		//         clFinish(queue[0]);
