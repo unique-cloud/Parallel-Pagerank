@@ -81,6 +81,7 @@ int edge_centric(vector<Edge> &edges, const int N, float *output_rank)
             sink_val += mapRank[idx];
         }
         sink_val /= N;
+        cout << "Sink value outside is " << sink_val << endl;
         clEnqueueUnmapMemObject(queue[0], rankBuffer, (void *)mapRank, 0, NULL, NULL);
         // The sink value will be added during the gather phase
         clSetKernelArg(kernel[1], 5, sizeof(int), (void *)&sink_val);
