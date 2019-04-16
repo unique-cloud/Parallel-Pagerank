@@ -32,9 +32,9 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 	}
 
 	// Update the matrix to 1.0 if there's an edge between nodes
-	for (auto &edge : edges)
+	for (int i = 0; i < edges.size(); ++i)
 	{
-		a[edge.src][edge.dest] = 1;
+		a[edges[i].src][edges[i].dest] = 1;
 	}
     
 	// Initialize the stochastic matrix
