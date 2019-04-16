@@ -13,8 +13,8 @@ int edge_centric(vector<Edge> &edges, const int N, float *output_rank)
     float *rank_arr = new float[N];
     Msg *msg_arr = new Msg[num_edges];
 
-    for (auto &e : edges)
-        outCount_arr[e.src]++;
+    for (int i = 0; i < edges.size(); ++i)
+        outCount_arr[edges[i].src]++;
     for (int i = 0; i < N; ++i)
         rank_arr[i] = 1.0 / N;
 
@@ -76,10 +76,10 @@ int edge_centric(vector<Edge> &edges, const int N, float *output_rank)
         float *mapRank = (float *)clEnqueueMapBuffer(queue[0], rankBuffer, true, CL_MAP_READ, 0,
                                                      sizeof(float) * N, 0, NULL, NULL, &status);
         sink_val = 0;
-        for (auto &idx : sink_idx)
+        for (int i = 0; i < sink_idx.size(); ++i)
         {
-            sink_val += mapRank[idx];
-            cout << "Got rank value of sink node "<<idx<<" is " << mapRank[idx] << endl;
+            sink_val += mapRank[sink_idx[i]];
+            cout << "Got rank value of sink node "<< sink_idx[i] <<" is " << mapRank[sink_idx[i]] << endl;
         }
         sink_val /= N;
         cout << "Sink value outside is " << sink_val << endl;

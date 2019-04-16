@@ -31,7 +31,7 @@ SRCS_FILES = $(foreach F, $(SRCS), ./$(F))
 AOCL_SRCS_FILES = $(foreach F, $(AOCL_SRCS), ./$(F))
 OBJS=$(SRCS:.c=.o)
 COMMON_FILES = ./common/src/AOCL_Utils.cpp
-CXX_FLAGS =-lm -O3 -g -std=c++11
+CXX_FLAGS =-lm -O3 -g
 
 # arm cross compiler
 CROSS-COMPILE = arm-linux-gnueabihf-

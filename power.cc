@@ -25,9 +25,9 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
     vector<int> sink_idx;
     
 	// Initialize the output link vector
-	for (auto &e : edges)
+	for (int i = 0; i < edges.size(); ++i)
 	{
-		out_link[e.src]++;
+		out_link[edges[i].src]++;
 	}
     for(int i = 0; i < out_link.size(); ++i)
     {
@@ -36,9 +36,9 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
     }
     
     vector<Element> p_matrix; 
-    for(auto &e : edges)
+    for(int i = 0; i < edges.size(); ++i)
     {
-        Element ele = {e.src, e.dest, 1.0 / out_link[e.src]};
+        Element ele = {edges[i].src, edges[i].dest, 1.0 / out_link[edges[i].src]};
         p_matrix.push_back(ele);
     }
 
@@ -86,9 +86,9 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 													sizeof(float) * N, 0, NULL, NULL, &status);
         // Caculate sink value
         sink_value = 0;
-        for(auto &idx : sink_idx)
+        for (int i = 0; i < sink_idx.size(); ++i)
         {
-            sink_value += mapRank[idx];
+            sink_value += mapRank[sink_idx[i]];
         }
         sink_value /= N;
         clEnqueueUnmapMemObject(queue[0], (*P_RVector), (void *)mapRank, 0, NULL, NULL);
