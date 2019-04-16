@@ -8,11 +8,13 @@ int edge_centric(vector<Edge> &edges, const int N, float *output_rank)
 {
     // Create and initialize necessary arrays
     uint num_edges = edges.size();
-    uint *outCount_arr = new uint[N]{0};
+    uint *outCount_arr = new uint[N];
     float *err_arr = new float[N];
     float *rank_arr = new float[N];
     Msg *msg_arr = new Msg[num_edges];
 
+    for (int i = 0; i < N; ++i)
+        outCount_arr[i] = 0;
     for (int i = 0; i < edges.size(); ++i)
         outCount_arr[edges[i].src]++;
     for (int i = 0; i < N; ++i)
