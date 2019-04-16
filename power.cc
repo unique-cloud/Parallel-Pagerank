@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "pagerank.hh"
 #include "common.hh"
 #include "CL/opencl.h"
@@ -8,114 +9,48 @@ using namespace std;
 
 /* OpenCL Power Method implementation of the PageRank algorithm */
 
+typedef struct __attribute__ ((packed)) {
+	int row;
+	int column;
+	float value;
+} Element;
+
 int power(vector<Edge> &edges, const int N, float *output_rank)
 {
     // Defind the dumping factor
 	float d = 0.85;
     
-    // Initialize a
-	float **a = (float **)malloc(sizeof(float *) * N);
-	int i, j, node1, node2;
+    	// Initialize the output link 
+	vector<int> out_link(N, 0);
+    vector<int> sink_idx;
     
-    // Preallocate the adjacency matrix 'a'
-	for (i = 0; i < N; i++)
-	{
-		a[i] = (float *)malloc(sizeof(float) * N);
-	}
-
-	for (i = 0; i < N; i++)
-	{
-		for (j = 0; j < N; j++)
-		{
-			a[i][j] = 0.0;
-		}
-	}
-
-	// Update the matrix to 1.0 if there's an edge between nodes
-	for (auto &edge : edges)
-	{
-		a[edge.src][edge.dest] = 1;
-	}
-
-	// Initialize the page rank array
-	float *p = new float[N];
-
-	// Initialize the p[] vector
-	for (i = 0; i < N; i++)
-	{
-		p[i] = 1.0 / N;
-	}
-
-	// Initialize the output link 
-	int *out_link = new int[N];
-
 	// Initialize the output link vector
-	for (i = 0; i < N; i++)
+	for (auto &e : edges)
 	{
-		out_link[i] = 0;
+		out_link[e.src]++;
 	}
-
-	// Manage dangling nodes
-	for (i = 0; i < N; i++)
-	{
-		for (j = 0; j < N; j++)
-		{
-			if (a[i][j] != 0.0)
-			{
-				out_link[i] = out_link[i] + 1;
-			}
-		}
-	}
-
-	// Make the matrix stochastic
-	for (i = 0; i < N; i++)
-	{
-		if (out_link[i] == 0)
-		{
-			// Deal with dangling nodes
-			for (j = 0; j < N; j++)
-			{
-				a[i][j] = 1.0 / N;
-			}
-		}
-		else
-		{
-			for (j = 0; j < N; j++)
-			{
-				if (a[i][j] != 0)
-				{
-					a[i][j] = a[i][j] / out_link[i];
-				}
-			}
-		}
-	}
-
-	// Transpose to make the proper stochastic matrix
-	float *at = new float[N * N];
-
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
-			at[i + j * N] = a[i][j];
-		}
-	}
-
-	// Looping the page rank algorithm
-	int looping = 1;
+    for(int i = 0; i < out_link.size(); ++i)
+    {
+        if(out_link[i] == 0)
+            sink_idx.push_back(i);
+    }
+    
+    vector<Element> p_matrix; 
+    for(auto &e : edges)
+    {
+        Element ele = {e.src, e.dest, 1 / out_link[e.src]};
+        p_matrix.push_back(ele);
+    }
 
 	// Initialize new p vector
-	float *p_new = new float[N];
-	for (i = 0; i < N; i++)
-	{
-		p_new[i] = 0.0;
-	}
-
-	float *error = (float *)malloc(sizeof(float) * N);
-	for (i = 0; i < N; i++)
-	{
-		error[i] = 0.0;
-	}
+    float *p = new float[N];
+	float *p_new = new float[N]{0.0};
+    float *error = new float[N]{0.0};
+    
+    for(int i = 0; i < N; ++i)
+    {
+        p[i] = 1.0 / N;
+    }
 
 	string cl_name = "power";
 	init_opencl(cl_name);
@@ -125,49 +60,59 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 	kernel[0] = clCreateKernel(program, kernel_name, &status);
 	checkError(status, "Failed to create kernel");
 
-	size_t global_work_size = N;
-
 	// Allocate buffer on device and migrate data
-	cl_mem matrix = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-								   N * N * sizeof(float), at, &status);
-	cl_mem RVector = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+	cl_mem matrixBuffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+								    p_matrix.size() * sizeof(Element), &p_matrix[0], &status);
+	cl_mem RVectorBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 									N * sizeof(float), p, &status);
-	cl_mem output = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+	cl_mem outputBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 								   N * sizeof(float), p_new, &status);
-	cl_mem errorArray = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+	cl_mem errorBuffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
 									   N * sizeof(float), error, &status);
-	cl_mem *P_RVector = &RVector;
-	cl_mem *P_output = &output;
-	while (looping)
+
+	cl_mem *P_RVector = &RVectorBuffer;
+	cl_mem *P_output = &outputBuffer;
+    float sink_value = 0;
+    size_t global_work_size = N;
+    int num_edges = edges.size();
+
+    clSetKernelArg(kernel[0], 0, sizeof(cl_mem), (void *)&matrixBuffer);
+	clSetKernelArg(kernel[0], 1, sizeof(cl_mem), (void *)P_RVector);
+	clSetKernelArg(kernel[0], 2, sizeof(cl_mem), (void *)P_output);
+	clSetKernelArg(kernel[0], 3, sizeof(cl_mem), (void *)&errorBuffer);
+	clSetKernelArg(kernel[0], 5, sizeof(cl_int), (void *)&num_edges);
+    
+	while (true)
 	{
-
-		clSetKernelArg(kernel[0], 0, sizeof(cl_mem), &matrix);
-		clSetKernelArg(kernel[0], 1, sizeof(cl_mem), P_RVector);
-		clSetKernelArg(kernel[0], 2, sizeof(cl_mem), P_output);
-		clSetKernelArg(kernel[0], 3, sizeof(cl_mem), &errorArray);
-		clSetKernelArg(kernel[0], 4, sizeof(cl_int), &N);
-
+        float *mapRank = (float *)clEnqueueMapBuffer(queue[0], (*P_RVector), true, CL_MAP_READ, 0,
+													sizeof(float) * N, 0, NULL, NULL, &status);
+        // Caculate sink value
+        sink_value = 0;
+        for(auto &idx : sink_idx)
+        {
+            sink_value += mapRank[idx];
+        }
+        sink_value /= N;
+        clEnqueueUnmapMemObject(queue[0], (*P_RVector), (void *)mapRank, 0, NULL, NULL);
+        
+        clSetKernelArg(kernel[0], 4, sizeof(cl_int), &sink_value);
+        
 		clEnqueueNDRangeKernel(queue[0], kernel[0], 1, NULL, &global_work_size, NULL, 0, NULL, NULL);
 		//         clFinish(queue[0]);
 
-		float *mapErr = (float *)clEnqueueMapBuffer(queue[0], errorArray, true, CL_MAP_READ, 0,
+		float *mapErr = (float *)clEnqueueMapBuffer(queue[0], errorBuffer, true, CL_MAP_READ, 0,
 													sizeof(float) * N, 0, NULL, NULL, &status);
 		float errorSum = 0.0;
-		for (i = 0; i < N; i++)
+		for (int i = 0; i < N; i++)
 		{
 			errorSum += mapErr[i];
 		}
-		clEnqueueUnmapMemObject(queue[0], errorArray, (void *)mapErr, 0, NULL, NULL);
+		clEnqueueUnmapMemObject(queue[0], errorBuffer, (void *)mapErr, 0, NULL, NULL);
         std::cout << "Power Error is: " << errorSum << endl;
 		//if two consecutive instances of pagerank vector are almost identical, stop
 		if (errorSum < DIFF_ERROR)
 		{
-			clEnqueueReadBuffer(queue[0], output, CL_TRUE, 0, N * sizeof(float), p_new, 0, NULL, NULL);
-             
-			for (i = 0; i < N; i++)
-			{
-				output_rank[i] = p_new[i];
-			}
+			clEnqueueReadBuffer(queue[0], (*P_output), CL_TRUE, 0, N * sizeof(float), output_rank, 0, NULL, NULL);
 			break;
 		}
 
@@ -189,3 +134,4 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
     
 	return 0;
 }
+
