@@ -1,13 +1,17 @@
+// =============================================================================
+// OpenCL Power Method implementation of the PageRank algorithm
+//
+// Author: Xiaorui Tang, Weikun Ma, Yujie Gui
+// =============================================================================
+
 #include <iostream>
 #include <vector>
-#include "pagerank.hh"
-#include "common.hh"
+#include "pagerank.h"
+#include "common.h"
 #include "CL/opencl.h"
 #include "AOCL_Utils.h"
 
 using namespace std;
-
-/* OpenCL Power Method implementation of the PageRank algorithm */
 
 typedef struct __attribute__ ((packed)) {
 	int row;
@@ -75,6 +79,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
     float sink_value = 0;
     size_t global_work_size = N;
     int num_edges = edges.size();
+	int iter_count = 0;
 
     clSetKernelArg(kernel[0], 0, sizeof(cl_mem), (void *)&matrixBuffer);
 	clSetKernelArg(kernel[0], 3, sizeof(cl_mem), (void *)&errorBuffer);
@@ -82,6 +87,8 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
     
 	while (true)
 	{
+        cout << "Iteration: " << ++iter_count << endl;
+
         float *mapRank = (float *)clEnqueueMapBuffer(queue[0], (*P_RVector), true, CL_MAP_READ, 0,
 													sizeof(float) * N, 0, NULL, NULL, &status);
         // Caculate sink value
@@ -108,7 +115,7 @@ int power(vector<Edge> &edges, const int N, float *output_rank)
 			errorSum += mapErr[i];
 		}
 		clEnqueueUnmapMemObject(queue[0], errorBuffer, (void *)mapErr, 0, NULL, NULL);
-        std::cout << "Power Error is: " << errorSum << endl;
+        std::cout << "Error is: " << errorSum << endl;
 		//if two consecutive instances of pagerank vector are almost identical, stop
 		if (errorSum < DIFF_ERROR)
 		{

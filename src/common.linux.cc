@@ -1,4 +1,4 @@
-#include "common.hh"
+#include "common.h"
 
 // OpenCL runtime configuration
 cl_platform_id platform = NULL;
@@ -52,7 +52,7 @@ bool init_opencl(std::string cl_name)
     // representative device (assuming all device are of the same type).
 
     // Read the file in from source
-    FILE *program_handle = fopen((cl_name + ".cl").c_str(), "r");
+    FILE *program_handle = fopen(("./device/" + cl_name + ".cl").c_str(), "r");
     if (program_handle == NULL)
     {
         perror("Couldn't find the program file");

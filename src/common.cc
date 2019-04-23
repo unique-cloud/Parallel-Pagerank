@@ -1,4 +1,4 @@
-#include "common.hh"
+#include "common.h"
 
 #ifdef APPLE
 // OpenCL runtime configuration
@@ -9,7 +9,7 @@ cl_context context = NULL;
 cl_command_queue queue; // num_devices elements
 cl_program program = NULL;
 cl_kernel kernel; // num_devices elements
-cl_int status;                  // error code checking
+cl_int status;    // error code checking
 #else
 // OpenCL runtime configuration
 cl_platform_id platform = NULL;
@@ -26,8 +26,8 @@ cl_int status;                  // error code checking
 static int LoadTextFromFile(const char *file_name, char **result_string, size_t *string_len);
 #define LOCAL_MEM_SIZE = 1024;
 void _checkError(int line,
-								 const char *file,
-								 cl_int error,
+                 const char *file,
+                 cl_int error,
                  const char *msg,
                  ...);
 
@@ -35,7 +35,8 @@ void _checkError(int line,
 #endif
 
 // Initializes the OpenCL objects.
-bool init_opencl(std::string cl_name) {
+bool init_opencl(std::string cl_name)
+{
   int err;
 
   printf("Initializing OpenCL\n");
@@ -50,23 +51,26 @@ bool init_opencl(std::string cl_name) {
   // Create the context.
   context = clCreateContext(NULL, 1, &device, NULL, NULL, &status);
   checkError(status, "Failed to create context");
-#else 
-  if(!setCwdToExeDir()) {
+#else
+  if (!setCwdToExeDir())
+  {
     return false;
   }
 
   // Get the OpenCL platform.
   platform = findPlatform("Altera");
- if(platform == NULL) {
-   printf("ERROR: Unable to find Altera OpenCL platform.\n");
-   return false;
- }
+  if (platform == NULL)
+  {
+    printf("ERROR: Unable to find Altera OpenCL platform.\n");
+    return false;
+  }
 
   // Query the available OpenCL device.
   device.reset(getDevices(platform, CL_DEVICE_TYPE_ALL, &num_devices));
   printf("Platform: %s\n", getPlatformName(platform).c_str());
   printf("Using %d device(s)\n", num_devices);
-  for(unsigned i = 0; i < num_devices; ++i) {
+  for (unsigned i = 0; i < num_devices; ++i)
+  {
     printf("  %s\n", getDeviceName(device[i]).c_str());
   }
   // Create the context.
@@ -88,7 +92,8 @@ bool init_opencl(std::string cl_name) {
   //Create per-device objects.
   queue.reset(num_devices);
   kernel.reset(num_devices);
-  for(unsigned i = 0; i < num_devices; ++i) {
+  for (unsigned i = 0; i < num_devices; ++i)
+  {
     // Command queue.
     queue[i] = clCreateCommandQueue(context, device[i], CL_QUEUE_PROFILING_ENABLE, &status);
     checkError(status, "Failed to create command queue");
@@ -98,7 +103,7 @@ bool init_opencl(std::string cl_name) {
   size_t length = 0;
   LoadTextFromFile("fpgasort.cl", &source, &length);
   const char *kernel_name = "fpgasort";
-  program = clCreateProgramWithSource(context, 1, (const char **) & source, NULL, &err);
+  program = clCreateProgramWithSource(context, 1, (const char **)&source, NULL, &err);
 
   // Build the program that was just created.
   status = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
@@ -110,13 +115,17 @@ bool init_opencl(std::string cl_name) {
   return true;
 }
 
-void cleanup() {
+void cleanup()
+{
 #ifndef APPLE
-  for(unsigned i = 0; i < num_devices; ++i) {
-    if(kernel && kernel[i]) {
+  for (unsigned i = 0; i < num_devices; ++i)
+  {
+    if (kernel && kernel[i])
+    {
       clReleaseKernel(kernel[i]);
     }
-    if(queue && queue[i]) {
+    if (queue && queue[i])
+    {
       clReleaseCommandQueue(queue[i]);
     }
   }
@@ -124,10 +133,12 @@ void cleanup() {
   clReleaseKernel(kernel);
   clReleaseCommandQueue(queue);
 #endif
-  if(program) {
+  if (program)
+  {
     clReleaseProgram(program);
   }
-  if(context) {
+  if (context)
+  {
     clReleaseContext(context);
   }
 }
@@ -135,47 +146,49 @@ void cleanup() {
 static int LoadTextFromFile(
     const char *file_name, char **result_string, size_t *string_len)
 {
-    int fd;
-    unsigned file_len;
-    struct stat file_status;
-    int ret;
- 
-    *string_len = 0;
-    fd = open(file_name, O_RDONLY);
-    if (fd == -1)
-    {
-        printf("Error opening file %s\n", file_name);
-        return -1;
-    }
-    ret = fstat(fd, &file_status);
-    if (ret)
-    {
-        printf("Error reading status for file %s\n", file_name);
-        return -1;
-    }
-    file_len = file_status.st_size;
- 
-    *result_string = (char*)calloc(file_len + 1, sizeof(char));
-    ret = read(fd, *result_string, file_len);
-    if (!ret)
-    {
-        printf("Error reading from file %s\n", file_name);
-        return -1;
-    }
- 
-    close(fd);
- 
-    *string_len = file_len;
-    return 0;
+  int fd;
+  unsigned file_len;
+  struct stat file_status;
+  int ret;
+
+  *string_len = 0;
+  fd = open(file_name, O_RDONLY);
+  if (fd == -1)
+  {
+    printf("Error opening file %s\n", file_name);
+    return -1;
+  }
+  ret = fstat(fd, &file_status);
+  if (ret)
+  {
+    printf("Error reading status for file %s\n", file_name);
+    return -1;
+  }
+  file_len = file_status.st_size;
+
+  *result_string = (char *)calloc(file_len + 1, sizeof(char));
+  ret = read(fd, *result_string, file_len);
+  if (!ret)
+  {
+    printf("Error reading from file %s\n", file_name);
+    return -1;
+  }
+
+  close(fd);
+
+  *string_len = file_len;
+  return 0;
 }
 
 // High-resolution timer.
-double getCurrentTimestamp() {
+double getCurrentTimestamp()
+{
 #ifdef _WIN32 // Windows
   // Use the high-resolution performance counter.
 
   static LARGE_INTEGER ticks_per_second = {};
-  if(ticks_per_second.QuadPart == 0) {
+  if (ticks_per_second.QuadPart == 0)
+  {
     // First call - get the frequency.
     QueryPerformanceFrequency(&ticks_per_second);
   }
@@ -185,7 +198,7 @@ double getCurrentTimestamp() {
 
   double seconds = double(counter.QuadPart) / double(ticks_per_second.QuadPart);
   return seconds;
-#else         // Linux
+#else // Linux
   timespec a;
   clock_gettime(CLOCK_MONOTONIC, &a);
   return (double(a.tv_nsec) * 1.0e-9) + double(a.tv_sec);
@@ -193,13 +206,15 @@ double getCurrentTimestamp() {
 }
 
 void _checkError(int line,
-								 const char *file,
-								 cl_int error,
+                 const char *file,
+                 cl_int error,
                  const char *msg,
-                 ...) {
-	// If not successful
-	if(error != CL_SUCCESS) {
-		// Print line and file
+                 ...)
+{
+  // If not successful
+  if (error != CL_SUCCESS)
+  {
+    // Print line and file
     printf("ERROR: ");
     printf("\nLocation: %s:%d\n", file, line);
 
@@ -213,6 +228,6 @@ void _checkError(int line,
     // Cleanup and bail.
     cleanup();
     exit(error);
-    }
+  }
 }
 #endif

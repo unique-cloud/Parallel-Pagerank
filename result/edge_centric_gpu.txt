@@ -1,0 +1,179 @@
+Number of nodes = 6012
+Number of edges = 23875
+The total number of edges read in: 23875
+Platform: NVIDIA CUDA
+Using 1 device(s)
+  GeForce RTX 2080
+Iteration: 1
+Error is 0.490736
+Iteration: 2
+Error is 0.25542
+Iteration: 3
+Error is 0.139914
+Iteration: 4
+Error is 0.0824913
+Iteration: 5
+Error is 0.0527651
+Iteration: 6
+Error is 0.0343337
+Iteration: 7
+Error is 0.0235694
+Iteration: 8
+Error is 0.0161458
+Iteration: 9
+Error is 0.0117587
+Iteration: 10
+Error is 0.00848864
+Iteration: 11
+Error is 0.00651222
+Iteration: 12
+Error is 0.00506997
+Iteration: 13
+Error is 0.00409855
+Iteration: 14
+Error is 0.00331041
+Iteration: 15
+Error is 0.00271437
+Iteration: 16
+Error is 0.00221075
+Iteration: 17
+Error is 0.00182073
+Iteration: 18
+Error is 0.00148835
+Iteration: 19
+Error is 0.00122775
+Iteration: 20
+Error is 0.00100859
+Iteration: 21
+Error is 0.000833806
+Iteration: 22
+Error is 0.000688192
+Iteration: 23
+Error is 0.000566705
+Iteration: 24
+Error is 0.000469973
+Iteration: 25
+Error is 0.000386055
+Iteration: 26
+Error is 0.000319553
+Iteration: 27
+Error is 0.000266252
+Iteration: 28
+Error is 0.00021969
+Iteration: 29
+Error is 0.000179752
+Iteration: 30
+Error is 0.000149716
+Iteration: 31
+Error is 0.000124053
+Iteration: 32
+Error is 0.000103051
+Iteration: 33
+Error is 8.59342e-05
+Iteration: 34
+Error is 7.25822e-05
+Iteration: 35
+Error is 6.00564e-05
+Iteration: 36
+Error is 5.04205e-05
+Iteration: 37
+Error is 4.19737e-05
+Iteration: 38
+Error is 3.51998e-05
+Iteration: 39
+Error is 2.85052e-05
+Iteration: 40
+Error is 2.36005e-05
+Iteration: 41
+Error is 1.98416e-05
+Iteration: 42
+Error is 1.61477e-05
+Iteration: 43
+Error is 1.32829e-05
+Iteration: 44
+Error is 1.10886e-05
+Iteration: 45
+Error is 9.0938e-06
+Iteration: 46
+Error is 7.53476e-06
+Iteration: 47
+Error is 6.29048e-06
+Iteration: 48
+Error is 5.16606e-06
+Iteration: 49
+Error is 4.30408e-06
+Iteration: 50
+Error is 3.57918e-06
+Iteration: 51
+Error is 2.98724e-06
+Iteration: 52
+Error is 2.45746e-06
+Iteration: 53
+Error is 2.05575e-06
+Iteration: 54
+Error is 1.74943e-06
+Iteration: 55
+Error is 1.42519e-06
+Iteration: 56
+Error is 1.19081e-06
+Iteration: 57
+Error is 9.95547e-07
+Using edge centric method: 197062
+Error is: 0.490721
+Error is: 0.255429
+Error is: 0.139919
+Error is: 0.0824974
+Error is: 0.052766
+Error is: 0.0343346
+Error is: 0.0235741
+Error is: 0.0161451
+Error is: 0.0117587
+Error is: 0.0084905
+Error is: 0.00651346
+Error is: 0.00506929
+Error is: 0.00410003
+Error is: 0.0033098
+Error is: 0.0027154
+Error is: 0.00221046
+Error is: 0.00182399
+Error is: 0.00149121
+Error is: 0.00122965
+Error is: 0.00100942
+Error is: 0.000834207
+Error is: 0.000685602
+Error is: 0.000567259
+Error is: 0.000470143
+Error is: 0.00038735
+Error is: 0.000320071
+Error is: 0.000264273
+Error is: 0.00022103
+Error is: 0.000181952
+Error is: 0.000152431
+Error is: 0.000124945
+Error is: 0.000103546
+Error is: 8.588e-05
+Error is: 7.2186e-05
+Error is: 5.94853e-05
+Error is: 4.92761e-05
+Error is: 4.11067e-05
+Error is: 3.36602e-05
+Error is: 2.78891e-05
+Error is: 2.35902e-05
+Error is: 1.94214e-05
+Error is: 1.6361e-05
+Error is: 1.32723e-05
+Error is: 1.10304e-05
+Error is: 9.41373e-06
+Error is: 7.81719e-06
+Error is: 6.38815e-06
+Error is: 5.44764e-06
+Error is: 4.42616e-06
+Error is: 3.66822e-06
+Error is: 3.07378e-06
+Error is: 2.58085e-06
+Error is: 2.1698e-06
+Error is: 1.82915e-06
+Error is: 1.51058e-06
+Error is: 1.27058e-06
+Error is: 1.10487e-06
+Error is: 9.908e-07

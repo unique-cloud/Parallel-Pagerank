@@ -2,7 +2,7 @@
 #define PAGERANK_H
 
 #include <vector>
-#include "common.hh"
+#include "common.h"
 
 using namespace std;
 

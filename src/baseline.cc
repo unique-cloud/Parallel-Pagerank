@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <iostream>
-#include "pagerank.hh"
+#include "pagerank.h"
 
 /* sequential implementation of the PageRank algorithm */
 
@@ -120,12 +120,14 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 	// Set the looping condition and the number of iterations 'k'
 	int looping = 1;
 	int k = 0;
+	int iter_count = 0;
 
 	// Initialize new p vector
 	float p_new[N];
 
 	while (looping)
 	{
+        cout << "Iteration: " << ++iter_count << endl;
 
 		// Initialize p_new as a vector of n 0.0 cells
 		for (i = 0; i < N; i++)
@@ -154,7 +156,7 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 			error = error + fabs(p_new[i] - p[i]);
 		}
 
-		std::cout << "Error is: " << error << endl;
+		cout << "Error is: " << error << endl;
 		//if two consecutive instances of pagerank vector are almost identical, stop
 		if (error < DIFF_ERROR)
 		{
@@ -177,13 +179,13 @@ int baseline(vector<Edge> &edges, const int N, float *output_rank)
 	}
 
 	/*************************** CONCLUSIONS *******************************/
-	// Print results
-	// printf ("\nNumber of iteration to converge: %d \n\n", k);
-	// printf ("Final Pagerank values:\n\n[");
-	// for (i=0; i<N; i++){
-	// 	std::cout << " " << p[i];
-	// 	if(i!=(N-1)){ std::cout << ", "; }
-	// }
-	// printf("]\n\n");
+// 	// Print results
+// 	printf ("\nNumber of iteration to converge: %d \n\n", k);
+// 	printf ("Final Pagerank values:\n\n[");
+// 	for (i=0; i<N; i++){
+// 		std::cout << " " << p[i];
+// 		if(i!=(N-1)){ std::cout << ", "; }
+// 	}
+// 	printf("]\n\n");
 	return 0;
 }

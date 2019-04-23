@@ -1,6 +1,12 @@
+// =============================================================================
+// OpenCL Edge-centric method implementation of the PageRank algorithm
+//
+// Author: Xiaorui Tang, Weikun Ma, Yujie Gui
+// =============================================================================
+
 #include <iostream>
-#include "pagerank.hh"
-#include "common.hh"
+#include "pagerank.h"
+#include "common.h"
 
 using namespace std;
 

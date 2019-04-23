@@ -1,10 +1,16 @@
+// =============================================================================
+// Parallel implemetation of the Pagerank Algorithm
+//
+// Author: Xiaorui Tang, Weikun Ma, Yujie Gui
+// =============================================================================
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <sys/time.h>
 #include <cmath>
-#include "pagerank.hh"
+#include "pagerank.h"
 
 using namespace std;
 
@@ -63,7 +69,7 @@ int main(int argc, char **argv)
         edges.push_back(e);
     }
 
-    cout << "The total number of edges read in: " << edges.size() << endl;
+    // cout << "The total number of edges read in: " << edges.size() << endl;
     if (num_edges != edges.size())
     {
         cerr << "Wrong number of data size";
@@ -80,13 +86,13 @@ int main(int argc, char **argv)
         gettimeofday(&time_start, NULL);
         power(edges, num_nodes, output_rank);
         gettimeofday(&time_end, NULL);
-        cout << "Using power method: ";
+        cout << "Use power method: ";
         break;
     case 2:
         gettimeofday(&time_start, NULL);
         edge_centric(edges, num_nodes, output_rank);
         gettimeofday(&time_end, NULL);
-        cout << "Using edge centric method: ";
+        cout << "Use edge centric method: ";
         break;
     case 10:
         gettimeofday(&time_start, NULL);
@@ -98,15 +104,17 @@ int main(int argc, char **argv)
         gettimeofday(&time_start, NULL);
         baseline(edges, num_nodes, output_rank);
         gettimeofday(&time_end, NULL);
-        cout << "Using baseline: ";
+        cout << "Use baseline: ";
         break;
     }
 
     cout << (time_end.tv_sec * 1000000 + time_end.tv_usec) - (time_start.tv_sec * 1000000 + time_start.tv_usec) << endl;
 
     // Verify result
-    cerr << "Verifying Result" << endl;
+    cout << "Verifying Result" << endl;
+    cout.setstate(ios_base::failbit);
     baseline(edges, num_nodes, base_rank);
+    cout.clear();
     int i = 0;
     for (i = 0; i < num_nodes; i++)
     {
@@ -114,15 +122,15 @@ int main(int argc, char **argv)
             break;
     }
     if (i != num_nodes)
-        cerr << "Failed at " << i << endl;
+        cout << "Failed at " << i << endl;
     else
-        cerr << "Pass" << endl;
+        cout << "Pass" << endl;
 
     // Cleanup
     delete (output_rank);
     delete (base_rank);
+    cleanup();
 
     gettimeofday(&program_end, NULL);
-
     return 0;
 }
